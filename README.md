@@ -1,5 +1,5 @@
 # PocketHealth-Backend
-**An AI Health Assistant Application built with Django, Django REST Framework **
+**An AI Health Assistant Application built with Django, Django REST Framework.**
 
 This is the source code of "*PocketHealth-Backend*". 
 
