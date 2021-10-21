@@ -17,7 +17,7 @@ python3 -m venv venv
 
 ```
 source ./venv/bin/activate
-pip install -m ./requirements.txt
+pip install -r ./requirements.txt
 ```
 
 #### Apply the migrations as usual.
