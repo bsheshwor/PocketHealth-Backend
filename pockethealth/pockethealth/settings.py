@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'account',
+
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -119,7 +121,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-AUTH_USER_MODEL = 'account.UserProfile'
+AUTH_USER_MODEL = 'account.User'
+
+# Add two new backends under default authentication
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+        'account.backends.JWTStudentAuthentication',
+        'account.backends.JWTEmployeeAuthentication',
+  )
+}
 
 STATIC_URL = '/static/'
 
