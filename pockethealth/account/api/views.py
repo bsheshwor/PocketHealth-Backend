@@ -13,7 +13,7 @@ from account.api.serializers import CustomerRegistrationSerializer, DoctorRegist
 
 class CustomerRegistration(APIView):
     permission_classes = (AllowAny, )
-    renderer_classes = (UserJSONRenderer,)
+    # renderer_classes = (UserJSONRenderer,)
     serializer_class = CustomerRegistrationSerializer
 
     def post(self, request):
@@ -24,7 +24,7 @@ class CustomerRegistration(APIView):
 
 class DoctorRegistration(APIView):
     permission_classes = (AllowAny, )
-    renderer_classes = (UserJSONRenderer,)
+    # renderer_classes = (UserJSONRenderer,)
     serializer_class = DoctorRegistrationSerializer
 
     def post(self, request):
@@ -35,7 +35,7 @@ class DoctorRegistration(APIView):
 
 class UserLogin(APIView):
     permission_classes = (AllowAny, )
-    renderer_classes = (UserJSONRenderer, )
+    # renderer_classes = (UserJSONRenderer, )
     serializer_class = UserLoginSerializer
 
     def post(self, request):

@@ -38,8 +38,7 @@ class UserManager(BaseUserManager):
 
         user.save(using=self._db) 
     
-    def get_by_natural_key(self, email):
-        return self.get(email=email)
+
     
 class CustomerManager(BaseUserManager):
 
@@ -67,16 +66,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(db_index=True, unique=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    # is_customer = models.BooleanField(default = False)
-    # is_doctor = models.BooleanField(default = False)
-    avatar = models.ImageField(null=True, blank=True)
-
     objects = UserManager()
 
     USERNAME_FIELD = "email"
@@ -103,8 +99,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         return self.first_name
     
-    def natural_key(self):
-        return (self.first_name, self.last_name)
 
     def __str__(self):
         """Django uses this when it needs to convert the object to a string"""
@@ -123,7 +117,7 @@ class Customer(User, PermissionsMixin):
     def __str__(self):
         return self.first_name
 
-class Doctor(models.Model):
+class Doctor(User, PermissionsMixin):
     # user = models.OneToOneField(UserProfile,on_delete=models.CASCADE, related_name="doctor_account")
     hospital_name = models.CharField(db_index=True, max_length=100)
 

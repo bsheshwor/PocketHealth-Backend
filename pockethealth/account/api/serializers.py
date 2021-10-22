@@ -1,11 +1,9 @@
-from typing_extensions import Required
 from rest_framework import serializers
 from django.conf import settings
+from django.contrib.auth import authenticate
 
 
-from account.models import Customer, Doctor
-
-# User = settings.AUTH_USER_MODEL
+from account.models import Customer, Doctor, User
 
 class CustomerRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -13,11 +11,18 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         min_length = 8,
         write_only = True
     )
+
+    # password_confirm = serializers.CharField(
+    #     max_length = 150,
+    #     min_length = 8,
+    #     write_only = True
+    # )
+
     token = serializers.CharField(max_length = 255, read_only=True)
     
     class Meta:
         model = Customer
-        fields = '__all__'
+        fields = ('first_name','last_name', 'email', 'password','occupation', 'token')
 
     def create(self, validated_data):
         return Customer.objects.create_customer(**validated_data)
@@ -28,11 +33,18 @@ class DoctorRegistrationSerializer(serializers.ModelSerializer):
         min_length = 8,
         write_only = True
     )
+
+    # password_confirm = serializers.CharField(
+    #     max_length = 150,
+    #     min_length = 8,
+    #     write_only = True
+    # )
+
     token = serializers.CharField(max_length = 255, read_only=True)
-    
+
     class Meta:
         model = Doctor
-        fields = '__all__'
+        fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token')
 
     def create(self, validated_data):
         return Doctor.objects.create_doctor(**validated_data)
@@ -55,7 +67,7 @@ class UserLoginSerializer(serializers.Serializer):
             )
         try:
             userObj = Customer.objects.get(email=user.email)
-        except Customer.DoesNotExist():
+        except Customer.DoesNotExist:
             userObj = None
         
         try:

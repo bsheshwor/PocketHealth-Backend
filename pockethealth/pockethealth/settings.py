@@ -126,8 +126,8 @@ AUTH_USER_MODEL = 'account.User'
 # Add two new backends under default authentication
 REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': (
-        'account.backends.JWTStudentAuthentication',
-        'account.backends.JWTEmployeeAuthentication',
+        'account.api.backends.JWTCustomerAuthentication',
+        'account.api.backends.JWTDoctorAuthentication',
   )
 }
 
