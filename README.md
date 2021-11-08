@@ -28,4 +28,4 @@ python manage.py runserver
 ```
 
 #### Open up Chrome and go to 127.0.0.1:8000 and the app is now running in development mode!
-> Developed By :  Sajan Mahat, Bisheshwor Neupane, Umesh Shrestha, Nripesh Karmacharya
+> Developed By :  Sajan Mahat, Bisheshwor Neupane, Umesh Shrestha, Nripesh Karmacharya & Sabin Thapa
