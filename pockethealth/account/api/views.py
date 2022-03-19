@@ -46,66 +46,169 @@ class UserLogin(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
-class PeriodViewSet(mixins.UpdateModelMixin,
+class PeriodViewSet(mixins.CreateModelMixin,
+                    mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = Period.objects.all()
     serializer_class = PeriodSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
     # permission_classes = [IsAuthenticated, IsOwnProfileOrReadOnly]
 
-class ContactPointViewSet(mixins.UpdateModelMixin,
+class ContactPointViewSet(mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = ContactPoint.objects.all()
     serializer_class = ContactPointSerializer
 
-class DeceasedViewSet(mixins.UpdateModelMixin,
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class DeceasedViewSet(mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = Deceased.objects.all()
     serializer_class = DeceasedSerializer
 
-class AddressViewSet(mixins.UpdateModelMixin,
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class AddressViewSet(mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
 
-class HumanNameViewSet(mixins.UpdateModelMixin,
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class HumanNameViewSet(mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = HumanName.objects.all()
     serializer_class = HumanNameSerializer
 
-class MaritalStatusViewSet(mixins.UpdateModelMixin,
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class MaritalStatusViewSet(mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = MaritalStatus.objects.all()
     serializer_class = MaritalStatusSerializer
 
-class ContactViewSet(mixins.UpdateModelMixin,
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class ContactViewSet(
+                     mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = ContactPoint.objects.all()
     serializer_class = ContactSerializer
 
-class CommunicationViewSet(mixins.UpdateModelMixin,
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class CommunicationViewSet(mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = Communication.objects.all()
     serializer_class = CommunicationSerializer
 
-class LinkViewSet(mixins.UpdateModelMixin,
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class LinkViewSet(mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+                     viewsets.GenericViewSet,
+                     mixins.DestroyModelMixin):
     queryset = Link.objects.all()
     serializer_class = LinkSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

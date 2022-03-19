@@ -9,7 +9,13 @@ urlpatterns = [
     path('customer_register/', CustomerRegistration.as_view(), name='customer_register'),
     path('doctor_register/', DoctorRegistration.as_view(), name='doctor_register'),
     path('login/', UserLogin.as_view(), name='login'),
-    # path('period/', PeriodViewSet.as_view(), name='period'),
+    path('period/', PeriodViewSet.as_view({'get': 'list', 'post':'create'}), name="create_period"),
+    path('period/<int:pk>', PeriodViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='period'),
     # path('contact_point/', ContactPointViewSet.as_view(), name='contact_point'),
     # path('deceased/', DeceasedViewSet.as_view(), name='deceased'),
     # path('address/', AddressViewSet.as_view(), name='address'),
