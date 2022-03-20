@@ -17,6 +17,16 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
     #     write_only = True
     # )
 
+    period = serializers.StringRelatedField(read_only=True)
+    contact_point = serializers.StringRelatedField(read_only=True)
+    deceased = serializers.StringRelatedField(read_only=True)
+    address = serializers.StringRelatedField(read_only=True)
+    human_name = serializers.StringRelatedField(read_only=True)
+    marital_status = serializers.StringRelatedField(read_only=True)
+    contact = serializers.StringRelatedField(read_only=True)
+    communication = serializers.StringRelatedField(read_only=True)
+    link = serializers.StringRelatedField(read_only=True)
+
     token = serializers.CharField(max_length = 255, read_only=True)
     
     class Meta:
@@ -91,14 +101,12 @@ class UserLoginSerializer(serializers.Serializer):
         }
 
 class PeriodSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Period
         fields = "__all__"
 
 class ContactPointSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
     
     class Meta:
         model = ContactPoint
@@ -106,7 +114,6 @@ class ContactPointSerializer(serializers.ModelSerializer):
 
 
 class DeceasedSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = Deceased
@@ -114,7 +121,6 @@ class DeceasedSerializer(serializers.ModelSerializer):
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = Address
@@ -122,7 +128,6 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class HumanNameSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = HumanName
@@ -130,7 +135,6 @@ class HumanNameSerializer(serializers.ModelSerializer):
 
 
 class MaritalStatusSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = MaritalStatus
@@ -138,21 +142,18 @@ class MaritalStatusSerializer(serializers.ModelSerializer):
 
 
 class ContactSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = Contact
         fields = "__all__"
 
 class CommunicationSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = Communication
         fields = "__all__"
 
 class LinkSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = Link
