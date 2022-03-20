@@ -16,12 +16,60 @@ urlpatterns = [
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
                                         }), name='period'),
-    # path('contact_point/', ContactPointViewSet.as_view(), name='contact_point'),
-    # path('deceased/', DeceasedViewSet.as_view(), name='deceased'),
-    # path('address/', AddressViewSet.as_view(), name='address'),
-    # path('human_name/', HumanNameViewSet.as_view(), name='human_name'),
-    # path('marital_status/', MaritalStatusViewSet.as_view(), name='marital_status'),
-    # path('contact/', ContactViewSet.as_view(), name='contact'),
-    # path('communication/', CommunicationViewSet.as_view(), name='communication'),
-    # path('link/', LinkViewSet.as_view(), name='link')
+    path('contact_point/', ContactPointViewSet.as_view({'get': 'list', 'post':'create'}), name='contact_point'),
+    path('contact_point/<int:pk>', ContactPointViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='contact-point'),
+    path('deceased/', DeceasedViewSet.as_view({'get': 'list', 'post':'create'}), name='deceased'),
+    path('deceased/<int:pk>', DeceasedViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='deceased-detail'),
+    path('address/', AddressViewSet.as_view({'get': 'list', 'post':'create'}), name='address'),
+    path('address/<int:pk>', AddressViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='address-detail'),
+    path('human_name/', HumanNameViewSet.as_view({'get': 'list', 'post':'create'}), name='human_name'),
+    path('human_name/<int:pk>', HumanNameViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='human_name-detail'),
+    path('marital_status/', MaritalStatusViewSet.as_view({'get': 'list', 'post':'create'}), name='marital_status'),
+    path('marital_status/<int:pk>', MaritalStatusViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='marital_status-detail'),
+    path('contact/', ContactViewSet.as_view({'get': 'list', 'post':'create'}), name='contact'),
+    path('contact/<int:pk>', ContactViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='contact-detail'),
+    path('communication/', CommunicationViewSet.as_view({'get': 'list', 'post':'create'}), name='communication'),
+    path('communication/<int:pk>', CommunicationViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='communication-detail'),
+    path('link/', LinkViewSet.as_view({'get': 'list', 'post':'create'}), name='link'),
+    path('link/<int:pk>', LinkViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='link-detail'),
 ]

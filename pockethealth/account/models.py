@@ -139,7 +139,7 @@ class Period(models.Model):
 
     return: range(start:end)
     """
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer,on_delete= models.CASCADE),
     start = models.DateTimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
     end = models.DateTimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
 
@@ -188,7 +188,7 @@ class ContactPoint(models.Model):
     system = models.CharField(max_length=20, choices= SYSTEM_CHOICES,null=True, blank=True)
     value = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices = USE_CODE, null=True, blank=True)
-    rank = models.IntegerField(50, null=True, blank=True)
+    rank = models.IntegerField(null=True, blank=True)
     period = models.OneToOneField(Period,on_delete=models.CASCADE,null=True, blank=True)
 
 class Deceased(models.Model):

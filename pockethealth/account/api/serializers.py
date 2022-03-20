@@ -90,22 +90,22 @@ class UserLoginSerializer(serializers.Serializer):
             'token': user.token
         }
 
-class PeriodSerializer(serializers.Serializer):
+class PeriodSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Period
         fields = "__all__"
 
-class ContactPointSerializer(serializers.Serializer):
-    user = serializers.StringRelatedField(read_only=True)
+class ContactPointSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
     
     class Meta:
         model = ContactPoint
-        fields = "__all__"
+        fields = '__all__'
 
 
-class DeceasedSerializer(serializers.Serializer):
+class DeceasedSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
@@ -113,7 +113,7 @@ class DeceasedSerializer(serializers.Serializer):
         fields = "__all__"
 
 
-class AddressSerializer(serializers.Serializer):
+class AddressSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
@@ -121,7 +121,7 @@ class AddressSerializer(serializers.Serializer):
         fields = "__all__"
 
 
-class HumanNameSerializer(serializers.Serializer):
+class HumanNameSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
@@ -129,7 +129,7 @@ class HumanNameSerializer(serializers.Serializer):
         fields = "__all__"
 
 
-class MaritalStatusSerializer(serializers.Serializer):
+class MaritalStatusSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
@@ -137,21 +137,21 @@ class MaritalStatusSerializer(serializers.Serializer):
         fields = "__all__"
 
 
-class ContactSerializer(serializers.Serializer):
+class ContactSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = Contact
         fields = "__all__"
 
-class CommunicationSerializer(serializers.Serializer):
+class CommunicationSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = Communication
         fields = "__all__"
 
-class LinkSerializer(serializers.Serializer):
+class LinkSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     
     class Meta:
