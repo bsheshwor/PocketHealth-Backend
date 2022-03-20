@@ -130,19 +130,25 @@ class Doctor(User, PermissionsMixin):
     def __str__(self):
         return self.first_name
 
-class Period(models.Model):
-    """
-    This function is used to return the range of datetime.
-    It is not same as duration.
-    inputs:
-        start: start datetime of certain period.
-        end: end datetime of certain period.
+# class Period(models.Model):
+#     """
+#     This function is used to return the range of datetime.
+#     It is not same as duration.
+#     inputs:
+#         start: start datetime of certain period.
+#         end: end datetime of certain period.
 
-    return: range(start:end)
-    """
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
-    start = models.DateTimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
-    end = models.DateTimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
+#     return: range(start:end)
+#     """
+#     user = models.ForeignKey(Customer, related_name="period",on_delete= models.CASCADE)
+#     start = models.DateTimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
+#     end = models.DateTimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
+
+class Period(models.Model):
+    user = models.ForeignKey(Customer, related_name="period",on_delete= models.CASCADE)
+    start = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+    end = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+
 
 class ContactPoint(models.Model):
     """
@@ -184,12 +190,12 @@ class ContactPoint(models.Model):
         ("4", "Other")
     )
 
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer, related_name="contact_point",on_delete= models.CASCADE)
 
     system = models.CharField(max_length=20, choices= SYSTEM_CHOICES,null=True, blank=True)
     value = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices = USE_CODE, null=True, blank=True)
-    rank = models.IntegerField(50, null=True, blank=True)
+    rank = models.IntegerField(null=True, blank=True)
     period = models.OneToOneField(Period,on_delete=models.CASCADE,null=True, blank=True)
 
 class Deceased(models.Model):
@@ -197,7 +203,7 @@ class Deceased(models.Model):
     Indicates if the individual is deceased or not
     """
 
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer, related_name="deceased",on_delete= models.CASCADE)
     deceasedBoolean = models.BooleanField()
     # deceasedDateTime = models.BooleanField()
 
@@ -226,7 +232,7 @@ class Address(models.Model):
                             (both,"Postal & Physical"))
 
     #TODO: text--> appending, city and district int he form of options.
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer, related_name="address",on_delete= models.CASCADE)
     use = models.CharField(max_length=225, choices = ADDRESS_USE_CHOICES,null=True, blank=True)
     address_type = models.CharField(max_length=40, choices= ADDRESS_TYPE_CHOICES,null=True, blank=True)
     text = models.CharField(max_length=500,null=True, blank=True)
@@ -251,7 +257,7 @@ class HumanName(models.Model):
         ("6","old"),
         ("7","maiden")
     )
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer, related_name="human_name",on_delete= models.CASCADE)
     use = models.CharField(max_length=225, choices=USE_CODE, default="2",null=True, blank=True)
     text = models.CharField(max_length=225,null=True, blank=True)
     family = models.CharField(max_length=225,null=True, blank=True)
@@ -275,7 +281,7 @@ class MaritalStatus(models.Model):
                        ("UNK","unknown")
                        )
     
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer, related_name="marital_status",on_delete= models.CASCADE)
     code = models.CharField(max_length=15,null=True, blank=True)               
     text = models.CharField(max_length=255, choices = MARRIAGE_CODING,null=True, blank=True)
 
@@ -308,7 +314,7 @@ class Contact(models.Model):
         ("3","other"),
         ("4","unknown")
     )
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer, related_name="contact",on_delete= models.CASCADE)
     relationship = models.CharField(max_length=225, choices = RELATIONSHIP_CODE,null=True, blank=True)
     name = models.ForeignKey(HumanName,on_delete=models.CASCADE)
     telecom = models.ForeignKey(ContactPoint,on_delete=models.CASCADE)
@@ -382,7 +388,7 @@ class Communication(models.Model):
         ("zh-TW",	"Chinese (Taiwan)"),
     )
     
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer, related_name="communication",on_delete= models.CASCADE)
     language = models.CharField(max_length=225, choices=LANGUAGE_CODE, default="en-US",null=True, blank=True)
     preferred = models.BooleanField()
 
@@ -400,7 +406,7 @@ class Link(models.Model):
     # other_patient = models.ForeignKey(Patient, models.CASCADE = on_delete)
     # other_relatedperson = models.ForeignKey(RelatedPerson, models.CASCADE = on_delete)
     
-    user = models.ForeignKey(Customer,on_delete= models.CASCADE,null=True, blank=True)
+    user = models.ForeignKey(Customer, related_name="link", on_delete= models.CASCADE,null=True, blank=True)
     link_type = models.CharField(max_length=225, choices=TYPE_CODE,null=True, blank=True)
 
     def save(self, args, **kwargs):
