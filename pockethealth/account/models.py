@@ -1,5 +1,6 @@
 import time
 import datetime
+from unittest.util import _MAX_LENGTH
 import jwt
 
 from datetime import timedelta
@@ -405,3 +406,56 @@ class Link(models.Model):
     def save(self, args, **kwargs):
         self.text = self.given +" "+self.family
         super(HumanName, self).save(*args, **kwargs)
+
+#TODO : -->
+#general practitioner
+#managingOrganization
+#providedBy-->Reference(Organization)
+
+class Category(models.Model):
+
+    SERVICE_CODE = (("1","Adoption"),
+                    ("2","Aged Care"),
+                    ("34","Allied Health"),
+                    ("3","Alternative/Complementary Therapies"),
+                    ("4","Child Care /Kindergarten"),
+                    ("5","Child Development"),
+                    ("6","Child Protection & Family Services"),
+                    ("7","	Community Health Care"),
+                    ("8","Counselling"),
+                    ("36","Crisis Line (GPAH use only)"),
+                    ("9","Death Services"),
+                    ("10","Dental"),
+                    ("11","Disability Support"),
+                    ("12","Drug/Alcohol"),
+                    ("13","Education & Learning"),
+                    ("14","Emergency Department"),
+                    ("15","Employment"),
+                    ("16","Financial & Material Aid"),
+                    ("17","General Practice"),
+                    ("35","Hospital"),
+                    ("18","Housing/Homelessness"),
+                    ("19","Interpreting"),
+                    ("20","Justice"),
+                    ("21","Legal"),
+                    ("22","Mental Health"),
+                    ("38","NDIA"),
+                    ("23","Physical Activity & Recreation"),
+                    ("24","Regulation"),
+                    ("25","Respite/Carer Support"),
+                    ("26","Specialist Clinical Pathology"),
+                    ("27","Specialist Medical"),
+                    ("28","Specialist Obstetrics & Gynecology"),
+                    ("29","Specialist Paediatric"),
+                    ("30","Specialist Radiology/Imaging"),
+                    ("31","Specialist Surgical"),
+                    ("32","Support Group/s"),
+                    ("37","Test Message (HSD admin)"),
+                    ("33","Transport"),
+                   )
+    text = models.CharField(max_length=225, null=True, blank = True)
+
+
+#todo:typeclass (what to do?  more than 600 types)
+
+#speciality: ??
