@@ -2,8 +2,7 @@ from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import authenticate
 
-
-from account.models import Customer, Doctor, User
+from account.models import User, Customer, Doctor,Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
 
 class CustomerRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -17,6 +16,16 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
     #     min_length = 8,
     #     write_only = True
     # )
+
+    period = serializers.StringRelatedField(read_only=True)
+    contact_point = serializers.StringRelatedField(read_only=True)
+    deceased = serializers.StringRelatedField(read_only=True)
+    address = serializers.StringRelatedField(read_only=True)
+    human_name = serializers.StringRelatedField(read_only=True)
+    marital_status = serializers.StringRelatedField(read_only=True)
+    contact = serializers.StringRelatedField(read_only=True)
+    communication = serializers.StringRelatedField(read_only=True)
+    link = serializers.StringRelatedField(read_only=True)
 
     token = serializers.CharField(max_length = 255, read_only=True)
     
@@ -90,3 +99,62 @@ class UserLoginSerializer(serializers.Serializer):
             'email': user.email,
             'token': user.token
         }
+
+class PeriodSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Period
+        fields = "__all__"
+
+class ContactPointSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ContactPoint
+        fields = '__all__'
+
+
+class DeceasedSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Deceased
+        fields = "__all__"
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Address
+        fields = "__all__"
+
+
+class HumanNameSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = HumanName
+        fields = "__all__"
+
+
+class MaritalStatusSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = MaritalStatus
+        fields = "__all__"
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Contact
+        fields = "__all__"
+
+class CommunicationSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Communication
+        fields = "__all__"
+
+class LinkSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Link
+        fields = "__all__"
