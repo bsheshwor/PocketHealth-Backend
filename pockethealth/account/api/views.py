@@ -11,7 +11,7 @@ from account.api.renderers import UserJSONRenderer
 from account import models
 from account.api import serializers, permissions
 from account.models import User, Patient, Practitioner
-from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
+from account.patientModels import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
 
 from account.api.serializers import PatientRegistrationSerializer, PractitionerRegistrationSerializer, UserLoginSerializer,PeriodSerializer,ContactPointSerializer,DeceasedSerializer,AddressSerializer,HumanNameSerializer,MaritalStatusSerializer,ContactSerializer,CommunicationSerializer,LinkSerializer
 

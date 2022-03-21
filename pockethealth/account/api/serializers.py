@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 
 from account.models import User, Patient, Practitioner
-from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
+from account import patientModels
 
 class PatientRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -106,58 +106,119 @@ class UserLoginSerializer(serializers.Serializer):
 class PeriodSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Period
+        model = patientModels.Period
         fields = "__all__"
 
 class ContactPointSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = ContactPoint
+        model = patientModels.ContactPoint
         fields = '__all__'
 
 
 class DeceasedSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Deceased
+        model = patientModels.Deceased
         fields = "__all__"
 
 
 class AddressSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Address
+        model = patientModels.Address
         fields = "__all__"
 
 
 class HumanNameSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = HumanName
+        model = patientModels.HumanName
         fields = "__all__"
 
 
 class MaritalStatusSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = MaritalStatus
+        model = patientModels.MaritalStatus
         fields = "__all__"
 
 
 class ContactSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Contact
+        model = patientModels.Contact
         fields = "__all__"
 
 class CommunicationSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Communication
+        model = patientModels.Communication
         fields = "__all__"
 
 class LinkSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Link
+        model = patientModels.Link
         fields = "__all__"
+
+
+
+# class PractitionerPeriodSerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         model = practitionerModels.Period
+#         fields = "__all__"
+
+# class PractitionerContactPointSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.ContactPoint
+#         fields = '__all__'
+
+
+# class PractitionerDeceasedSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Deceased
+#         fields = "__all__"
+
+
+# class PractitionerAddressSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Address
+#         fields = "__all__"
+
+
+# class PractitionerHumanNameSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.HumanName
+#         fields = "__all__"
+
+
+# class PractitionerMaritalStatusSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.MaritalStatus
+#         fields = "__all__"
+
+
+# class PractitionerContactSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Contact
+#         fields = "__all__"
+
+# class PractitionerCommunicationSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Communication
+#         fields = "__all__"
+
+# class PractitionerSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Link
+#         fields = "__all__"

@@ -1,11 +1,10 @@
 from django.db import models
 from django.conf import settings
-
 from .models import Patient
 
 
 class Period(models.Model):
-    user_patient = models.ForeignKey(Patient, related_name="period",on_delete= models.CASCADE)
+    user = models.ForeignKey(Patient, related_name="period",on_delete= models.CASCADE)
     start = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     end = models.DateTimeField(auto_now_add=True,null=True, blank=True)
 
