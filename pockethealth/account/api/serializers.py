@@ -2,9 +2,10 @@ from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import authenticate
 
-from account.models import User, Customer, Doctor,Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
+from account.models import User, Patient, Doctor
+from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
 
-class CustomerRegistrationSerializer(serializers.ModelSerializer):
+class PatientRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length = 150,
         min_length = 8,
@@ -30,11 +31,11 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length = 255, read_only=True)
     
     class Meta:
-        model = Customer
+        model = Patient
         fields = ('first_name','last_name', 'email', 'password','occupation', 'token')
 
     def create(self, validated_data):
-        return Customer.objects.create_customer(**validated_data)
+        return Patient.objects.create_customer(**validated_data)
 
 class DoctorRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -75,8 +76,8 @@ class UserLoginSerializer(serializers.Serializer):
                 'A user with this email and password is not found.'
             )
         try:
-            userObj = Customer.objects.get(email=user.email)
-        except Customer.DoesNotExist:
+            userObj = Patient.objects.get(email=user.email)
+        except Patient.DoesNotExist:
             userObj = None
         
         try:
