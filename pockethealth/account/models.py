@@ -51,12 +51,12 @@ class PatientManager(BaseUserManager):
         patient.save()
         return patient
 
-class DoctorManager(BaseUserManager):
+class PractitionerManager(BaseUserManager):
     
-    def create_doctor(self, first_name, last_name, email, hospital_name, password = None):
+    def create_practitioner(self, first_name, last_name, email, hospital_name, password = None):
         if email is None:
             raise TypeError('Users must have an email address.')
-        doctor = Doctor(first_name=first_name, last_name=last_name, email=self.normalize_email(email), hospital_name=hospital_name)
+        doctor = Practitioner(first_name=first_name, last_name=last_name, email=self.normalize_email(email), hospital_name=hospital_name)
         doctor.set_password(password)
         doctor.save()
         return doctor
@@ -118,14 +118,14 @@ class Patient(User, PermissionsMixin):
     def __str__(self):
         return self.first_name
 
-class Doctor(User, PermissionsMixin):
+class Practitioner(User, PermissionsMixin):
     # user = models.OneToOneField(UserProfile,on_delete=models.CASCADE, related_name="doctor_account")
     hospital_name = models.CharField(db_index=True, max_length=100,null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'hospital_name']
 
-    objects = DoctorManager()
+    objects = PractitionerManager()
 
     def __str__(self):
         return self.first_name

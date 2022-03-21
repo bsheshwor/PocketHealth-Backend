@@ -5,7 +5,7 @@ from .models import Patient
 
 
 class Period(models.Model):
-    user = models.ForeignKey(Patient, related_name="period",on_delete= models.CASCADE)
+    user_patient = models.ForeignKey(Patient, related_name="period",on_delete= models.CASCADE)
     start = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     end = models.DateTimeField(auto_now_add=True,null=True, blank=True)
 

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import authenticate
 
-from account.models import User, Patient, Doctor
+from account.models import User, Patient, Practitioner
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
 
 class PatientRegistrationSerializer(serializers.ModelSerializer):
@@ -39,7 +39,7 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Patient.objects.create_patient(**validated_data)
 
-class DoctorRegistrationSerializer(serializers.ModelSerializer):
+class PractitionerRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length = 150,
         min_length = 8,
@@ -55,11 +55,11 @@ class DoctorRegistrationSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length = 255, read_only=True)
 
     class Meta:
-        model = Doctor
+        model = Practitioner
         fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token')
 
     def create(self, validated_data):
-        return Doctor.objects.create_doctor(**validated_data)
+        return Practitioner.objects.create_doctor(**validated_data)
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -84,8 +84,8 @@ class UserLoginSerializer(serializers.Serializer):
         
         try:
             if userObj is None:
-                userObj = Doctor.objects.get(email=user.email)
-        except Doctor.DoesNotExist:
+                userObj = Practitioner.objects.get(email=user.email)
+        except Practitioner.DoesNotExist:
             raise serializers.ValidationError(
                 'User not given email and password does not exist'
             )

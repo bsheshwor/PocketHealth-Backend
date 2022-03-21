@@ -1,9 +1,9 @@
 import jwt 
 from django.conf import settings
 from rest_framework import authentication, exceptions
-from account.models import Patient, Doctor
+from account.models import Patient, Practitioner
 
-class JWTCustomerAuthentication(authentication.BaseAuthentication):
+class JWTPatientAuthentication(authentication.BaseAuthentication):
     authentication_header_prefix = 'Token'
 
     def authenticate(self, request):
@@ -78,7 +78,7 @@ class JWTCustomerAuthentication(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed(msg)
         return (user, token)
     
-class JWTDoctorAuthentication(authentication.BaseAuthentication):
+class JWTPractitionerAuthentication(authentication.BaseAuthentication):
     authentication_header_prefix = 'Token'
  
     def authenticate(self, request):
@@ -143,8 +143,8 @@ class JWTDoctorAuthentication(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed(msg)
  
         try:
-            user = Doctor.objects.get(pk=payload['id'])
-        except Doctor.DoesNotExist:
+            user = Practitioner.objects.get(pk=payload['id'])
+        except Practitioner.DoesNotExist:
             msg = 'No user matching this token was found.'
             raise exceptions.AuthenticationFailed(msg)
             return
