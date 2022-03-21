@@ -32,10 +32,12 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Patient
-        fields = ('first_name','last_name', 'email', 'password','occupation', 'token')
+        fields = ('first_name','last_name', 'email', 'password','occupation',
+                  'period','contact_point','deceased','address','human_name',
+                  'marital_status','contact', 'communication','link','token')
 
     def create(self, validated_data):
-        return Patient.objects.create_customer(**validated_data)
+        return Patient.objects.create_patient(**validated_data)
 
 class DoctorRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(

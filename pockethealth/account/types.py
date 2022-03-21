@@ -102,7 +102,7 @@ class Address(models.Model):
     state = models.CharField(max_length=225,null=True, blank=True)
     postalCode = models.CharField(max_length=225,null=True, blank=True)
     country = models.CharField(max_length=225,null=True, blank=True)
-    period = models.OneToOneField(Period, on_delete= models.CASCADE)
+    period = models.OneToOneField(Period, on_delete= models.CASCADE,null=True, blank=True)
 
 class HumanName(models.Model):
     """

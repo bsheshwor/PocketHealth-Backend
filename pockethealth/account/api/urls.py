@@ -6,7 +6,7 @@ from .views import PatientRegistration, DoctorRegistration, UserLogin,PeriodView
 app_name = 'account'
 
 urlpatterns = [
-    path('customer_register/', PatientRegistration.as_view(), name='customer_register'),
+    path('patient_register/', PatientRegistration.as_view(), name='patient_register'),
     path('doctor_register/', DoctorRegistration.as_view(), name='doctor_register'),
     path('login/', UserLogin.as_view(), name='login'),
     path('period/', PeriodViewSet.as_view({'get': 'list', 'post':'create'}), name="create_period"),
