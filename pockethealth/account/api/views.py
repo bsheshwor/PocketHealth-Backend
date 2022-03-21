@@ -10,14 +10,15 @@ from account.api.renderers import UserJSONRenderer
 
 from account import models
 from account.api import serializers, permissions
-from account.models import User, Customer, Doctor,Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
+from account.models import User, Patient, Practitioner
+from account.patientModels import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
 
-from account.api.serializers import CustomerRegistrationSerializer, DoctorRegistrationSerializer, UserLoginSerializer,PeriodSerializer,ContactPointSerializer,DeceasedSerializer,AddressSerializer,HumanNameSerializer,MaritalStatusSerializer,ContactSerializer,CommunicationSerializer,LinkSerializer
+from account.api.serializers import PatientRegistrationSerializer, PractitionerRegistrationSerializer, UserLoginSerializer,PeriodSerializer,ContactPointSerializer,DeceasedSerializer,AddressSerializer,HumanNameSerializer,MaritalStatusSerializer,ContactSerializer,CommunicationSerializer,LinkSerializer
 
-class CustomerRegistration(APIView):
+class PatientRegistration(APIView):
     permission_classes = (AllowAny, )
     # renderer_classes = (UserJSONRenderer,)
-    serializer_class = CustomerRegistrationSerializer
+    serializer_class = PatientRegistrationSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -25,10 +26,10 @@ class CustomerRegistration(APIView):
         serializer.save()
         return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-class DoctorRegistration(APIView):
+class PractitionerRegistration(APIView):
     permission_classes = (AllowAny, )
     # renderer_classes = (UserJSONRenderer,)
-    serializer_class = DoctorRegistrationSerializer
+    serializer_class = PractitionerRegistrationSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)

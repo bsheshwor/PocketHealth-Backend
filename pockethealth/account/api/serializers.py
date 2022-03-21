@@ -2,9 +2,10 @@ from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import authenticate
 
-from account.models import User, Customer, Doctor,Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
+from account.models import User, Patient, Practitioner
+from account import patientModels
 
-class CustomerRegistrationSerializer(serializers.ModelSerializer):
+class PatientRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length = 150,
         min_length = 8,
@@ -30,13 +31,15 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length = 255, read_only=True)
     
     class Meta:
-        model = Customer
-        fields = ('first_name','last_name', 'email', 'password','occupation', 'token')
+        model = Patient
+        fields = ('first_name','last_name', 'email', 'password','occupation',
+                  'period','contact_point','deceased','address','human_name',
+                  'marital_status','contact', 'communication','link','token')
 
     def create(self, validated_data):
-        return Customer.objects.create_customer(**validated_data)
+        return Patient.objects.create_patient(**validated_data)
 
-class DoctorRegistrationSerializer(serializers.ModelSerializer):
+class PractitionerRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length = 150,
         min_length = 8,
@@ -52,11 +55,11 @@ class DoctorRegistrationSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length = 255, read_only=True)
 
     class Meta:
-        model = Doctor
+        model = Practitioner
         fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token')
 
     def create(self, validated_data):
-        return Doctor.objects.create_doctor(**validated_data)
+        return Practitioner.objects.create_doctor(**validated_data)
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -75,14 +78,14 @@ class UserLoginSerializer(serializers.Serializer):
                 'A user with this email and password is not found.'
             )
         try:
-            userObj = Customer.objects.get(email=user.email)
-        except Customer.DoesNotExist:
+            userObj = Patient.objects.get(email=user.email)
+        except Patient.DoesNotExist:
             userObj = None
         
         try:
             if userObj is None:
-                userObj = Doctor.objects.get(email=user.email)
-        except Doctor.DoesNotExist:
+                userObj = Practitioner.objects.get(email=user.email)
+        except Practitioner.DoesNotExist:
             raise serializers.ValidationError(
                 'User not given email and password does not exist'
             )
@@ -103,58 +106,119 @@ class UserLoginSerializer(serializers.Serializer):
 class PeriodSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Period
+        model = patientModels.Period
         fields = "__all__"
 
 class ContactPointSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = ContactPoint
+        model = patientModels.ContactPoint
         fields = '__all__'
 
 
 class DeceasedSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Deceased
+        model = patientModels.Deceased
         fields = "__all__"
 
 
 class AddressSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Address
+        model = patientModels.Address
         fields = "__all__"
 
 
 class HumanNameSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = HumanName
+        model = patientModels.HumanName
         fields = "__all__"
 
 
 class MaritalStatusSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = MaritalStatus
+        model = patientModels.MaritalStatus
         fields = "__all__"
 
 
 class ContactSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Contact
+        model = patientModels.Contact
         fields = "__all__"
 
 class CommunicationSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Communication
+        model = patientModels.Communication
         fields = "__all__"
 
 class LinkSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Link
+        model = patientModels.Link
         fields = "__all__"
+
+
+
+# class PractitionerPeriodSerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         model = practitionerModels.Period
+#         fields = "__all__"
+
+# class PractitionerContactPointSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.ContactPoint
+#         fields = '__all__'
+
+
+# class PractitionerDeceasedSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Deceased
+#         fields = "__all__"
+
+
+# class PractitionerAddressSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Address
+#         fields = "__all__"
+
+
+# class PractitionerHumanNameSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.HumanName
+#         fields = "__all__"
+
+
+# class PractitionerMaritalStatusSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.MaritalStatus
+#         fields = "__all__"
+
+
+# class PractitionerContactSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Contact
+#         fields = "__all__"
+
+# class PractitionerCommunicationSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Communication
+#         fields = "__all__"
+
+# class PractitionerSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = practitionerModels.Link
+#         fields = "__all__"
