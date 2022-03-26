@@ -11,9 +11,9 @@ from account.api.renderers import UserJSONRenderer
 from account import models
 from account.api import serializers, permissions
 from account.models import User, Patient, Practitioner
-from account.patientModels import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link
+from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
 
-from account.api.serializers import PatientRegistrationSerializer, PractitionerRegistrationSerializer, UserLoginSerializer,PeriodSerializer,ContactPointSerializer,DeceasedSerializer,AddressSerializer,HumanNameSerializer,MaritalStatusSerializer,ContactSerializer,CommunicationSerializer,LinkSerializer
+from account.api.serializers import PatientRegistrationSerializer, PractitionerRegistrationSerializer, UserLoginSerializer,PeriodSerializer,ContactPointSerializer,DeceasedSerializer,AddressSerializer,HumanNameSerializer,MaritalStatusSerializer,ContactSerializer,CommunicationSerializer,LinkSerializer,TelecomSerializer
 
 class PatientRegistration(APIView):
     permission_classes = (AllowAny, )
@@ -79,6 +79,10 @@ class ContactViewSet(viewsets.ModelViewSet):
 class CommunicationViewSet(viewsets.ModelViewSet):
     queryset = Communication.objects.all()
     serializer_class = CommunicationSerializer
+
+class TelecomViewSet(viewsets.ModelViewSet):
+    queryset = Telecom.objects.all()
+    serializer_class = TelecomSerializer
 
 class LinkViewSet(viewsets.ModelViewSet):
     queryset = Link.objects.all()

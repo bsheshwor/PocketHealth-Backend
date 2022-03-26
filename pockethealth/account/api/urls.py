@@ -1,7 +1,7 @@
 from django.urls import path
 from django.urls.resolvers import URLPattern
 
-from .views import PatientRegistration, PractitionerRegistration, UserLogin,PeriodViewSet,ContactPointViewSet,DeceasedViewSet,AddressViewSet,HumanNameViewSet,MaritalStatusViewSet,ContactViewSet,CommunicationViewSet,LinkViewSet
+from .views import PatientRegistration, PractitionerRegistration, UserLogin,PeriodViewSet,ContactPointViewSet,DeceasedViewSet,AddressViewSet,HumanNameViewSet,MaritalStatusViewSet,ContactViewSet,CommunicationViewSet,TelecomViewSet,LinkViewSet
 
 app_name = 'account'
 
@@ -65,6 +65,13 @@ urlpatterns = [
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
                                         }), name='communication-detail'),
+    path('telecom/', TelecomViewSet.as_view({'get': 'list', 'post':'create'}), name='telecom'),
+    path('telecom/<int:pk>', TelecomViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='telecom-detail'),
     path('link/', LinkViewSet.as_view({'get': 'list', 'post':'create'}), name='link'),
     path('link/<int:pk>', LinkViewSet.as_view({
                                             'get': 'retrieve',

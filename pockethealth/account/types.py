@@ -1,13 +1,103 @@
 from django.db import models
 from django.conf import settings
-from .models import Patient
 
 
-class Period(models.Model):
-    user = models.ForeignKey(Patient, related_name="period",on_delete= models.CASCADE)
-    start = models.DateTimeField(auto_now_add=True,null=True, blank=True)
-    end = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+class MaritalStatus(models.Model):
+    # coding(Coding)
+    MARRIAGE_CODING = (("A", "Annulled"),
+                       ("D", "Divorced"),
+                       ("I","Interlocutory"),
+                       ("L","Legally Separated"),
+                       ("M","Married"),
+                       ("P","Polygamous"),
+                       ("S","Never Married"),
+                       ("T","Domestic partner"),
+                       ("U","unmarried"),
+                       ("W","Widowed"),
+                       ("UNK","unknown")
+                       )
+    
+    # user = models.ForeignKey(Patient, related_name="marital_status",on_delete= models.CASCADE)
+    code = models.CharField(max_length=15,null=True, blank=True)               
+    text = models.CharField(max_length=255, choices = MARRIAGE_CODING,null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.text != None:
+            for element in self.MARRIAGE_CODING:
+                if element[1] == self.text:
+                    self.code = element[0]            
+        super(MaritalStatus, self).save(*args, **kwargs)
+
+
+
+class Contact(models.Model):
+    """
+    All codes from system http://terminology.hl7.org/CodeSystem/v2-0131
+    """
+    RELATIONSHIP_CODE = (
+        ("C","Emergency Contact"),	
+        ("E","Employer"),	
+        ("F","Federal Agency"),	
+        ("I","Insurance Company"),	
+        ("N","Next-of-Kin"),	
+        ("S","State Agency"),	
+        ("U","Unknown")
+    )
+
+    GENDER_CODE = (
+        ("1","male"),
+        ("2","female"),
+        ("3","other"),
+        ("4","unknown")
+    )
+    # user = models.ForeignKey(Patient, related_name="contact",on_delete= models.CASCADE)
+    relationship = models.CharField(max_length=225, choices = RELATIONSHIP_CODE,null=True, blank=True)
+    # name = models.ForeignKey(HumanName,on_delete=models.CASCADE)
+    # telecom = models.ForeignKey(ContactPoint,on_delete=models.CASCADE)
+    # address = models.ForeignKey(Address,on_delete=models.CASCADE)
+    gender = models.CharField(max_length=225, choices = GENDER_CODE,null=True, blank=True)
+    #TODO: organization(Reference(Organization))
+    # period = models.ForeignKey(Period, on_delete=models.CASCADE)
+
+
+
+
+class Deceased(models.Model):
+    """
+    Indicates if the individual is deceased or not
+    """
+
+    # user = models.ForeignKey(Patient, related_name="deceased",on_delete= models.CASCADE)
+    deceasedBoolean = models.BooleanField()
+    # deceasedDateTime = models.BooleanField()
+
+
+
+class HumanName(models.Model):
+    """
+    use(code) --> usual | official | temp | nickname | anonymous | old | maiden
+    """
+    USE_CODE = (
+        ("1","usual"),
+        ("2","official"),
+        ("3","temp"),
+        ("4", "nickname"),
+        ("5","anonymous"),
+        ("6","old"),
+        ("7","maiden")
+    )
+    # user = models.ForeignKey(Patient, related_name="human_name",on_delete= models.CASCADE)
+    use = models.CharField(max_length=225, choices=USE_CODE, default="2",null=True, blank=True)
+    text = models.CharField(max_length=225,null=True, blank=True)
+    family = models.CharField(max_length=225,null=True, blank=True)
+    given = models.CharField(max_length=225,null=True, blank=True)
+    prefix = models.CharField(max_length=10,null=True, blank=True)
+    suffix = models.CharField(max_length= 225,null=True, blank=True)
+    contact = models.ForeignKey(Contact,related_name='name',on_delete=models.CASCADE)
+
+    def save(self, args, **kwargs):
+        self.text = self.given +" "+self.family
+        super(HumanName, self).save(*args, **kwargs)
 
 class ContactPoint(models.Model):
     """
@@ -49,22 +139,17 @@ class ContactPoint(models.Model):
         ("4", "Other")
     )
 
-    user = models.ForeignKey(Patient, related_name="contact_point",on_delete= models.CASCADE)
+    # user = models.ForeignKey(Patient, related_name="contact_point",on_delete= models.CASCADE)
 
     system = models.CharField(max_length=20, choices= SYSTEM_CHOICES,null=True, blank=True)
     value = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices = USE_CODE, null=True, blank=True)
     rank = models.IntegerField(null=True, blank=True)
-    period = models.OneToOneField(Period,on_delete=models.CASCADE,null=True, blank=True)
 
-class Deceased(models.Model):
-    """
-    Indicates if the individual is deceased or not
-    """
+    # period = models.OneToOneField(Period,on_delete=models.CASCADE,null=True, blank=True)
 
-    user = models.ForeignKey(Patient, related_name="deceased",on_delete= models.CASCADE)
-    deceasedBoolean = models.BooleanField()
-    # deceasedDateTime = models.BooleanField()
+class Telecom(ContactPoint):
+    contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE)
 
 
 class Address(models.Model):
@@ -91,7 +176,7 @@ class Address(models.Model):
                             (both,"Postal & Physical"))
 
     #TODO: text--> appending, city and district int he form of options.
-    user = models.ForeignKey(Patient, related_name="address",on_delete= models.CASCADE)
+    # user = models.ForeignKey(Patient, related_name="address",on_delete= models.CASCADE)
     use = models.CharField(max_length=225, choices = ADDRESS_USE_CHOICES,null=True, blank=True)
     address_type = models.CharField(max_length=40, choices= ADDRESS_TYPE_CHOICES,null=True, blank=True)
     text = models.CharField(max_length=500,null=True, blank=True)
@@ -101,87 +186,8 @@ class Address(models.Model):
     state = models.CharField(max_length=225,null=True, blank=True)
     postalCode = models.CharField(max_length=225,null=True, blank=True)
     country = models.CharField(max_length=225,null=True, blank=True)
-    period = models.OneToOneField(Period, on_delete= models.CASCADE,null=True, blank=True)
+    contact = models.ForeignKey(Contact,related_name='address',on_delete=models.CASCADE)
 
-class HumanName(models.Model):
-    """
-    use(code) --> usual | official | temp | nickname | anonymous | old | maiden
-    """
-    USE_CODE = (
-        ("1","usual"),
-        ("2","official"),
-        ("3","temp"),
-        ("4", "nickname"),
-        ("5","anonymous"),
-        ("6","old"),
-        ("7","maiden")
-    )
-    user = models.ForeignKey(Patient, related_name="human_name",on_delete= models.CASCADE)
-    use = models.CharField(max_length=225, choices=USE_CODE, default="2",null=True, blank=True)
-    text = models.CharField(max_length=225,null=True, blank=True)
-    family = models.CharField(max_length=225,null=True, blank=True)
-    given = models.CharField(max_length=225,null=True, blank=True)
-    prefix = models.CharField(max_length=10,null=True, blank=True)
-    suffix = models.CharField(max_length= 225,null=True, blank=True)
-    period = models.OneToOneField(Period,on_delete=models.CASCADE)
-
-class MaritalStatus(models.Model):
-    # coding(Coding)
-    MARRIAGE_CODING = (("A", "Annulled"),
-                       ("D", "Divorced"),
-                       ("I","Interlocutory"),
-                       ("L","Legally Separated"),
-                       ("M","Married"),
-                       ("P","Polygamous"),
-                       ("S","Never Married"),
-                       ("T","Domestic partner"),
-                       ("U","unmarried"),
-                       ("W","Widowed"),
-                       ("UNK","unknown")
-                       )
-    
-    user = models.ForeignKey(Patient, related_name="marital_status",on_delete= models.CASCADE)
-    code = models.CharField(max_length=15,null=True, blank=True)               
-    text = models.CharField(max_length=255, choices = MARRIAGE_CODING,null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if self.text != None:
-            for element in self.MARRIAGE_CODING:
-                if element[1] == self.text:
-                    self.code = element[0]            
-        super(MaritalStatus, self).save(*args, **kwargs)
-
-
-
-class Contact(models.Model):
-    """
-    All codes from system http://terminology.hl7.org/CodeSystem/v2-0131
-    """
-    RELATIONSHIP_CODE = (
-        ("C","Emergency Contact"),	
-        ("E","Employer"),	
-        ("F","Federal Agency"),	
-        ("I","Insurance Company"),	
-        ("N","Next-of-Kin"),	
-        ("S","State Agency"),	
-        ("U","Unknown")
-    )
-
-    GENDER_CODE = (
-        ("1","male"),
-        ("2","female"),
-        ("3","other"),
-        ("4","unknown")
-    )
-    user = models.ForeignKey(Patient, related_name="contact",on_delete= models.CASCADE)
-    relationship = models.CharField(max_length=225, choices = RELATIONSHIP_CODE,null=True, blank=True)
-    name = models.ForeignKey(HumanName,on_delete=models.CASCADE)
-    telecom = models.ForeignKey(ContactPoint,on_delete=models.CASCADE)
-    address = models.ForeignKey(Address,on_delete=models.CASCADE)
-    gender = models.CharField(max_length=225, choices = GENDER_CODE,null=True, blank=True)
-    #TODO: organization(Reference(Organization))
-    period = models.ForeignKey(Period, on_delete=models.CASCADE)
-    
 
 class Communication(models.Model):
     """
@@ -247,7 +253,7 @@ class Communication(models.Model):
         ("zh-TW",	"Chinese (Taiwan)"),
     )
     
-    user = models.ForeignKey(Patient, related_name="communication",on_delete= models.CASCADE)
+    # user = models.ForeignKey(Patient, related_name="communication",on_delete= models.CASCADE)
     language = models.CharField(max_length=225, choices=LANGUAGE_CODE, default="en-US",null=True, blank=True)
     preferred = models.BooleanField()
 
@@ -265,12 +271,9 @@ class Link(models.Model):
     # other_patient = models.ForeignKey(Patient, models.CASCADE = on_delete)
     # other_relatedperson = models.ForeignKey(RelatedPerson, models.CASCADE = on_delete)
     
-    user = models.ForeignKey(Patient, related_name="link", on_delete= models.CASCADE,null=True, blank=True)
+    # user = models.ForeignKey(Patient, related_name="link", on_delete= models.CASCADE,null=True, blank=True)
     link_type = models.CharField(max_length=225, choices=TYPE_CODE,null=True, blank=True)
 
-    def save(self, args, **kwargs):
-        self.text = self.given +" "+self.family
-        super(HumanName, self).save(*args, **kwargs)
 
 #TODO : -->
 #general practitioner
@@ -320,6 +323,14 @@ class Category(models.Model):
                    )
     text = models.CharField(max_length=225, null=True, blank = True)
 
+class Period(models.Model):
+    # user = models.ForeignKey(Patient, related_name="period",on_delete= models.CASCADE)
+    start = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+    end = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+    contactpoint = models.OneToOneField(ContactPoint,related_name='period',on_delete=models.CASCADE,null=True, blank=True)
+    address = models.ForeignKey(Address,related_name='period', on_delete= models.CASCADE,null=True, blank=True)
+    humanname = models.ForeignKey(HumanName,related_name='period',on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact,related_name='period', on_delete=models.CASCADE)
 
 #todo:typeclass (what to do?  more than 600 types)
 
