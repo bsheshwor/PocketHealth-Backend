@@ -20,6 +20,7 @@ class MaritalStatus(models.Model):
     # user = models.ForeignKey(Patient, related_name="marital_status",on_delete= models.CASCADE)
     code = models.CharField(max_length=15,null=True, blank=True)               
     text = models.CharField(max_length=255, choices = MARRIAGE_CODING,null=True, blank=True)
+    
 
     def save(self, *args, **kwargs):
         if self.text != None:
