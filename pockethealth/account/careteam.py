@@ -1,33 +1,43 @@
 from django.db import models
 from django.conf import settings
 
-class Participant(models.Model):
-     role = CodeableConcept
-    # member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
-    # onBehalfOf = Refernce(Organization)
-    # period = Period 
+from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
+
 
 class CareTeam(models.Model):
     #IDENTIFIER
-    status = code
-    category = CodeableConcept
+    # status = code
+    #TODO: NOT AVAILABLE FOR CATEGORY
+    # category = CodeableConcept
     name = models.CharField(max_length=15,null=True, blank=True)  
     #subject = Reference(Patient | Group)
     #encounter = Reference(Encounter)
     #period = Period
-    participant
-    role = CodeableConcept
+    #TODO: --> 
+    # participant
+        # role = CodeableConcept
         # member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
         # onBehalfOf = Refernce(Organization)
         # period = Period
-    reasonCode = CodeableConcept
+    # reasonCode = CodeableConcept
+    #TODO: --> 
     # reasonReference = Reference(COndition)
     # managingOrganization = Refernce(Organization)
-    telecom = ContactPoint
-    note = Annotation
+    # telecom = ContactPoint
+    # note = Annotation
 
 
 
+class StatusCode(models.Model):
+    STATUS_CODE = (('proposed','Proposed'),
+                   ('active','Active'),
+                   ('suspended','Suspended'),
+                   ('inactive','Inactive'),
+                   ('entered-in-error','Entered in Error'),)
+    text = models.CharField(max_length=255, choices = STATUS_CODE)
+    careteam = models.ForeignKey(CareTeam,related_name='status',on_delete=models.CASCADE)
+
+class ParticipantRole(models.Model):
     ROLES_TYPES = (('375005','Sibling'),
                     ('Adoptive Father','609005'),
                     ('9947008','Natural Father'),
@@ -63,6 +73,19 @@ class CareTeam(models.Model):
                     ('127850001','Wife'),
                     ('133933007','NewBorn'),
                     ('133936004','Adult'))
+    text = models.CharField(max_length=255, choices = ROLES_TYPES)
+    participant = models.ForeignKey(Participant,related_name='role',on_delete=models.CASCADE)
+
+
+    
+class Participant(models.Model):
+    #  role = CodeableConcept
+    # member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
+    # onBehalfOf = Refernce(Organization)
+    # period = Period 
+    pass
+
+class ReasonCode(models.Model):
 
     REASON_CODE = (('219006','Alcohol User'),
                     ('237009','Acute myringitis'),
@@ -92,5 +115,19 @@ class CareTeam(models.Model):
                     ('4473006','Migraine with aura')
                     ('9999999999','Others')
                     )
+    text = models.CharField(max_length=255, choices = REASON_CODE)
+    participant = models.ForeignKey(Participant,related_name='reasonCode',on_delete=models.CASCADE)
 
-    
+
+class Annotation(models.Model):
+    # Author
+    time = models.DateTimeField()
+    text = models.CharField()
+    careteam = models.ForeignKey(CareTeam,related_name='note',on_delete=models.CASCADE)
+
+
+class Author(models.Model):
+    # authorReference = Reference(Practitioiner| Patient| RelatedPerso|Organization)
+    authorString = models.CharField(max_length=255)
+    Annotation = models.ForeignKey(Annotation,related_name='author',on_delete=models.CASCADE)
+

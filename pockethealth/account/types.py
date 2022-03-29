@@ -1,8 +1,10 @@
 from django.db import models
 from django.conf import settings
 
-from account.healthcareService import OrganizationContact, Organization, HealthCareService, notAvailableTime
+from account.organization import OrganizationContact, Organization
+from account.healthcareService import HealthCareService, notAvailableTime
 from account.location import Location
+from account.careteam import Participant, CareTeam
 
 class MaritalStatus(models.Model):
     # coding(Coding)
@@ -158,6 +160,7 @@ class ContactPoint(models.Model):
 class Telecom(ContactPoint):
     contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE)
     location = models.ForeignKey(Location,related_name='telecom',on_delete=models.CASCADE)
+    careteam = models.ForeignKey(CareTeam,related_name='telecom',on_delete=models.CASCADE)
 
 class Address(models.Model):
     """
@@ -342,6 +345,7 @@ class Period(models.Model):
     humanname = models.ForeignKey(HumanName,related_name='period',on_delete=models.CASCADE)
     contact = models.ForeignKey(Contact,related_name='period', on_delete=models.CASCADE)
     notavailabletime = models.ForeignKey(notAvailableTime,related_name='during',on_delete=models.CASCADE)
+    participant = models.ForeignKey(Participant,related_name='period',on_delete=models.CASCADE)
 
 #todo:typeclass (what to do?  more than 600 types)
 

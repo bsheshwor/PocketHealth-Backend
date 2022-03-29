@@ -1,6 +1,25 @@
 from django.db import models
 from django.conf import settings
 
+
+class Location(models.Model):
+    #identifier
+    # status = code
+    # operationalStatus = Coding
+    name = models.CharField(max_length=15,null=True, blank=True) 
+    alias = models.CharField(max_length=15,null=True, blank=True) 
+    description = models.CharField(max_length=15,null=True, blank=True) 
+    # mode = code
+    # types = CodeableConcept
+    # telecom = ContactPoint
+    # address = Address
+    # physicalType = CodeableCOncept
+    # position 
+    #managinOrganization= Reference(Organization)
+    #partOf = Refernce(Location)
+    # hourseOfOperation 
+    availabilityExceptions = models.CharField(max_length=15,null=True, blank=True) 
+
 class Status(models.Model):
     STATUS_CODE = (('active','Active'),
                    ('suspended','Suspended'),
@@ -98,21 +117,3 @@ class HoursOfOperation(models.Model):
     openingTime = models.TimeField(auto_now=False, auto_now_add=False)
     closingTime = models.TimeField(auto_now=False, auto_now_add=False)
     location = models.ForeignKey(Location,related_name='hoursOfOperation',on_delete=models.CASCADE)
-
-class Location(models.Model):
-    #identifier
-    # status = code
-    # operationalStatus = Coding
-    name = models.CharField(max_length=15,null=True, blank=True) 
-    alias = models.CharField(max_length=15,null=True, blank=True) 
-    description = models.CharField(max_length=15,null=True, blank=True) 
-    # mode = code
-    # types = CodeableConcept
-    # telecom = ContactPoint
-    # address = Address
-    # physicalType = CodeableCOncept
-    # position 
-    #managinOrganization= Reference(Organization)
-    #partOf = Refernce(Location)
-    # hourseOfOperation 
-    availabilityExceptions = models.CharField(max_length=15,null=True, blank=True) 
