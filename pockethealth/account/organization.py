@@ -10,6 +10,8 @@ class OrganizationContact(models.Model):
                     ('PATINF','Patient'),
                     ('PRESS','Press'),)
     purpose =  models.CharField(max_length = 255, choices = PURPOSE_TYPE)
+    organization = models.ForeignKey(Organization,related_name='contact',on_delete=models.CASCADE)
+
     # name = HumanName
     # telecom = ContactPoint
     # address = Address
