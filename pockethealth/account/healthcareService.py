@@ -43,12 +43,69 @@ class HealthcareCategory(models.Model):
                     ("33","Transport"),
                    )
     text = models.CharField(max_length = 255, choices = CATEGORY_TYPE)
+    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='category',on_delete=models.CASCADE)
+
+class Type(models.Model):
+    TYPE_CHOICES = (('5','Case Management for Older Persons	'),	
+				('30','Reiki'),
+				('60','Nutrition'),
+				('64','Pharmacy'),
+				('58','Maternal & Child Health	'),
+				('51','Blood Donation	'),
+				('88','General Dental'),
+				('117','Emergency Medical	'),
+				('102','Disability Supported Accommodation'),
+				('136','Mental Health Case Management'),
+				('151','Yoga'),
+				('159','Pathology - General'),
+				('165','Cardiology'),
+				('177','Neurology'),
+				('216','Neurosurgery'),
+				('226','Ambulance'),
+				('227','Blood Transport'),
+				('254','Asthma'),
+				('251','Arthritis'),
+				('268','Bone'),
+				('270','Brain'),
+				('284','Child Care'),
+				('316','Depression'),
+				('318','Diabetes'),
+				('396','Oral Hygiene'),
+				('380','Lung'),
+				('410','Pregnancy'))
+
+    text = models.CharField(max_length = 255, choices = TYPE_CHOICES)
+    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='types',on_delete=models.CASCADE)
+
+
+class Speciality(models.Model):
+    # speciality
+    SPECILAITY_CHOICES =(('394579002','Cardiology'),
+                ('408462000','Burns Care'),
+                ('394577000','Anesthetics'),
+                ('421661004','Blood banking and transfusion medicine'),
+                ('408478003','Critical care medicine'),
+                ('394812008','Dental medicine specialties'),
+                ('394582007','Dermatology'),
+                ('408475000','Diabetic Medicine'),
+                ('394802001','General medicine'),
+                ('394586005','Gynecology'),
+                ('394591006','Neurology'),
+                ('394914008','Radiology'),
+                ('394602003','Rehabilitation'),
+                ('394810000','Rheumatology'),
+                ('394609007','Surgery-general'),
+                ('394612005','Urology'))
+
+    text = models.CharField(max_length = 255, choices = SPECILAITY_CHOICES)
+    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='category',on_delete=models.CASCADE)
 
 class ServiceProvisionCode(models.Model):
     SERVICE_PROVISION_CODE = (('free','Free'),
                               ('disc','Discounts Available'),
                               ('cost','Fees apply'),)
     text = models.CharField(max_length = 255, choices = SERVICE_PROVISION_CODE)
+    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='serviceProvisionCode',on_delete=models.CASCADE)
 
 class Program(models.Model):
 
@@ -99,15 +156,19 @@ class Program(models.Model):
                     ('45','Victims Assistance Program'),
                     )
     text = models.CharField(max_length = 255, choices = PROGRAM_CODE)
+    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='program',on_delete=models.CASCADE)
+
+#TODO: > characteristics and communication left-->
 
 class ReferralMethod(models.Model):
-    REFERRAL_CODE = (('fAX','Fax'),
+    REFERRAL_CODE = (('fax','Fax'),
                      ('phone','Phone'),
                      ('elec','Secure Messaging'),
                      ('semail','Secure Email'),
                      ('mail','Mail'),
                     ) 
     text = models.CharField(max_length = 255, choices = REFERRAL_CODE)
+    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='referralMethod',on_delete=models.CASCADE)
 
 class availableTime(models.Model):
     DAYS_CODE = (('mon','Monday'),
@@ -121,47 +182,50 @@ class availableTime(models.Model):
     allDay = models.BooleanField()
     availableStartTIme =  models.TimeField(auto_now=False, auto_now_add=False)
     availabelEndTIme =  models.TimeField(auto_now=False, auto_now_add=False)
+    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='availableTime',on_delete=models.CASCADE)
 
-class notAvailabelTime(models.Model):
+class notAvailableTime(models.Model):
     description= models.CharField(max_length = 255)
-    during = Period
+    # during = Period
+    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='notAvailable',on_delete=models.CASCADE)
+
 
 class HealthcareService(models.Model):
     #indentifier
     active = models.BooleanField()
     # providedBy = Reference(Organization)
-    Category = cODEABLEconcept
-    types =cODEABLEconcept 
-    speciality = cODEABLEconcept
-    location = Refernce(Location)
+    # category = cODEABLEconcept
+    # types =cODEABLEconcept 
+    # speciality = cODEABLEconcept
+    #TODO: --> location = Refernce(Location)
     name = models.CharField(max_length = 255)
     comment = models.CharField(max_length = 255)
     # "extraDetails": "Several assessments are required for these specialist services, and the waiting times can be greater than 3 months at times. Existing patients are prioritized when requesting appointments on the schedule."
-    extraDetails = Markdown
-    photo = Attachment
-    Telecom = ContactPoint
-    coverageArea = ReferenceLocation
-    serviceProvisionCode = COdeableConcept
+    #TODO: --> extraDetails = Markdown
+    #TODO: photo = Attachment
+    # Telecom = ContactPoint
+    #TODO: coverageArea = ReferenceLocation
+    # serviceProvisionCode = COdeableConcept
     #confused about elligibility
-    eligibility 
-        code = COdeableCOncept
-        comment = MarkDown
+    # TODO: eligibility 
+    #     code = COdeableCOncept
+    #     comment = MarkDown
     
-    program= COdeableCOncept 
+    # program= COdeableCOncept 
 
     #CONFUSED ABOUT CHARACTERISTIC
-    characteristic= COdeableCOncept
+    # characteristic= COdeableCOncept
 
-    Communication= COdeableCOncept
+    # Communication= COdeableCOncept
 
-    referralMethod= COdeableCOncept
+    # referralMethod= COdeableCOncept
     appointmentRequired = models.BooleanField()
-    availableTIme
-        daysOfWeek = code
-        allDay = boolean
-        availableStartTIme = time
-        availabelEndTIme = time
-    notAvailable
-        description = string
-        during = period
+    # availableTIme
+    #     daysOfWeek = code
+    #     allDay = boolean
+    #     availableStartTIme = time
+    #     availabelEndTIme = time
+    # notAvailable
+    #     description = string
+    #     during = period
     availabilityExceptions = models.CharField(max_length = 255)
