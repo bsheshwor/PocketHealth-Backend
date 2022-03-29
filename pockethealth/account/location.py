@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from account.healthcareService import HealthcareService
 
 
 class Location(models.Model):
@@ -9,6 +10,7 @@ class Location(models.Model):
     name = models.CharField(max_length=15,null=True, blank=True) 
     alias = models.CharField(max_length=15,null=True, blank=True) 
     description = models.CharField(max_length=15,null=True, blank=True) 
+
     # mode = code
     # types = CodeableConcept
     # telecom = ContactPoint
@@ -19,6 +21,7 @@ class Location(models.Model):
     #partOf = Refernce(Location)
     # hourseOfOperation 
     availabilityExceptions = models.CharField(max_length=15,null=True, blank=True) 
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='location',on_delete=models.CASCADE)
 
 class Status(models.Model):
     STATUS_CODE = (('active','Active'),

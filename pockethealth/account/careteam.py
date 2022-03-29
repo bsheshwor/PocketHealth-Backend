@@ -10,18 +10,18 @@ class CareTeam(models.Model):
     #TODO: NOT AVAILABLE FOR CATEGORY
     # category = CodeableConcept
     name = models.CharField(max_length=15,null=True, blank=True)  
-    #subject = Reference(Patient | Group)
-    #encounter = Reference(Encounter)
+    #TODO subject = Reference(Patient | Group)
+    #TODO encounter = Reference(Encounter)
     #period = Period
     #TODO: --> 
     # participant
         # role = CodeableConcept
-        # member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
+        #TODO member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
         # onBehalfOf = Refernce(Organization)
         # period = Period
     # reasonCode = CodeableConcept
     #TODO: --> 
-    # reasonReference = Reference(COndition)
+    #TODO reasonReference = Reference(COndition)
     # managingOrganization = Refernce(Organization)
     # telecom = ContactPoint
     # note = Annotation
@@ -80,7 +80,7 @@ class ParticipantRole(models.Model):
     
 class Participant(models.Model):
     #  role = CodeableConcept
-    # member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
+    #TODO member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
     # onBehalfOf = Refernce(Organization)
     # period = Period 
     pass
@@ -127,7 +127,7 @@ class Annotation(models.Model):
 
 
 class Author(models.Model):
-    # authorReference = Reference(Practitioiner| Patient| RelatedPerso|Organization)
+    #TODO authorReference = Reference(Practitioiner| Patient| RelatedPerso|Organization)
     authorString = models.CharField(max_length=255)
     Annotation = models.ForeignKey(Annotation,related_name='author',on_delete=models.CASCADE)
 

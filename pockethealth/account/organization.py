@@ -1,7 +1,9 @@
 from django.db import models
 from django.conf import settings
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
-
+from account.careteam import CareTeam, Participant 
+from account.healthcareService import HealthcareService
+from account.location import Location
 
 class Organization(models.Model):
     #indentifiers
@@ -23,6 +25,11 @@ class Organization(models.Model):
     types = models.CharField(max_length= 255, choices= ORGANIZATION_TYPE)
     name = models.CharField(max_length=255)
     alias = models.CharField(max_length=255)
+    careteam = models.ForeignKey(CareTeam,related_name='managingOrganization',on_delete=models.CASCADE)
+    participant = models.ForeignKey(Participant,related_name='onBehalfOf',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='providedBy',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='managingOrganization',on_delete=models.CASCADE)
+
     # telecom = models.CHar(contactpoint)
     #Address(Address)
     #partOf(Reference(Organization))

@@ -197,14 +197,14 @@ class HealthcareService(models.Model):
     # category = cODEABLEconcept
     # types =cODEABLEconcept 
     # speciality = cODEABLEconcept
-    #TODO: --> location = Refernce(Location)
+    # location = Refernce(Location)
     name = models.CharField(max_length = 255)
     comment = models.CharField(max_length = 255)
     # "extraDetails": "Several assessments are required for these specialist services, and the waiting times can be greater than 3 months at times. Existing patients are prioritized when requesting appointments on the schedule."
     #TODO: --> extraDetails = Markdown
     #TODO: photo = Attachment
     # Telecom = ContactPoint
-    #TODO: coverageArea = ReferenceLocation
+    #TODO coverageArea = ReferenceLocation
     # serviceProvisionCode = COdeableConcept
     #confused about elligibility
     # TODO: eligibility 
