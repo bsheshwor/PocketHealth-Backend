@@ -1,8 +1,8 @@
 from django.db import models
 from django.conf import settings
 
-from account.organization import OrganizationContact, Organization, HealthCareService, notAvailableTime
-
+from account.healthcareService import OrganizationContact, Organization, HealthCareService, notAvailableTime
+from account.location import Location
 
 class MaritalStatus(models.Model):
     # coding(Coding)
@@ -157,7 +157,7 @@ class ContactPoint(models.Model):
 
 class Telecom(ContactPoint):
     contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE)
-
+    location = models.ForeignKey(Location,related_name='telecom',on_delete=models.CASCADE)
 
 class Address(models.Model):
     """
@@ -196,6 +196,7 @@ class Address(models.Model):
     contact = models.ForeignKey(Contact,related_name='address',on_delete=models.CASCADE)
     organizationcontact = models.ForeignKey(OrganizationContact,related_name='address',on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization,related_name='address',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='address',on_delete=models.CASCADE)
 
 class Communication(models.Model):
     """
