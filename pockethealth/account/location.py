@@ -48,7 +48,7 @@ class Mode(models.Model):
     text = models.CharField(max_length=255, choices = MODE_CODE)
     location = models.ForeignKey(Location,related_name='mode',on_delete=models.CASCADE)
 
-class Type(models.Model):
+class Types(models.Model):
     TYPE_CODE = (('DX','Diagnostics or therapeutics unit'),
                  ('CVDX','Cardiovascular diagnostics or therapeutics unit'),
                  ('CATH','Cardiac catheterization lab'),

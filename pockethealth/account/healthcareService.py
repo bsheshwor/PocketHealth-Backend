@@ -2,6 +2,47 @@ from django.db import models
 from django.conf import settings
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
 
+
+class HealthcareService(models.Model):
+    #indentifier
+    active = models.BooleanField()
+    # providedBy = Reference(Organization)
+    # category = cODEABLEconcept
+    # types =cODEABLEconcept 
+    # speciality = cODEABLEconcept
+    # location = Refernce(Location)
+    name = models.CharField(max_length = 255)
+    comment = models.CharField(max_length = 255)
+    # "extraDetails": "Several assessments are required for these specialist services, and the waiting times can be greater than 3 months at times. Existing patients are prioritized when requesting appointments on the schedule."
+    #TODO: --> extraDetails = Markdown
+    #TODO: photo = Attachment
+    # Telecom = ContactPoint
+    #TODO coverageArea = ReferenceLocation
+    # serviceProvisionCode = COdeableConcept
+    #confused about elligibility
+    # TODO: eligibility 
+    #     code = COdeableCOncept
+    #     comment = MarkDown
+    
+    # program= COdeableCOncept 
+
+    #CONFUSED ABOUT CHARACTERISTIC
+    # characteristic= COdeableCOncept
+
+    # Communication= COdeableCOncept
+
+    # referralMethod= COdeableCOncept
+    appointmentRequired = models.BooleanField()
+    # availableTIme
+    #     daysOfWeek = code
+    #     allDay = boolean
+    #     availableStartTIme = time
+    #     availabelEndTIme = time
+    # notAvailable
+    #     description = string
+    #     during = period
+    availabilityExceptions = models.CharField(max_length = 255)
+
 class HealthcareCategory(models.Model):
     CATEGORY_TYPE = (("1","Adoption"),
                     ("2","Aged Care"),
@@ -43,7 +84,7 @@ class HealthcareCategory(models.Model):
                     ("33","Transport"),
                    )
     text = models.CharField(max_length = 255, choices = CATEGORY_TYPE)
-    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='category',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='category',on_delete=models.CASCADE)
 
 class Type(models.Model):
     TYPE_CHOICES = (('5','Case Management for Older Persons	'),	
@@ -75,7 +116,7 @@ class Type(models.Model):
 				('410','Pregnancy'))
 
     text = models.CharField(max_length = 255, choices = TYPE_CHOICES)
-    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='types',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='types',on_delete=models.CASCADE)
 
 
 class Speciality(models.Model):
@@ -98,14 +139,14 @@ class Speciality(models.Model):
                 ('394612005','Urology'))
 
     text = models.CharField(max_length = 255, choices = SPECILAITY_CHOICES)
-    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='category',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='category',on_delete=models.CASCADE)
 
 class ServiceProvisionCode(models.Model):
     SERVICE_PROVISION_CODE = (('free','Free'),
                               ('disc','Discounts Available'),
                               ('cost','Fees apply'),)
     text = models.CharField(max_length = 255, choices = SERVICE_PROVISION_CODE)
-    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='serviceProvisionCode',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='serviceProvisionCode',on_delete=models.CASCADE)
 
 class Program(models.Model):
 
@@ -156,7 +197,7 @@ class Program(models.Model):
                     ('45','Victims Assistance Program'),
                     )
     text = models.CharField(max_length = 255, choices = PROGRAM_CODE)
-    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='program',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='program',on_delete=models.CASCADE)
 
 #TODO: > characteristics and communication left-->
 
@@ -168,7 +209,7 @@ class ReferralMethod(models.Model):
                      ('mail','Mail'),
                     ) 
     text = models.CharField(max_length = 255, choices = REFERRAL_CODE)
-    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='referralMethod',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='referralMethod',on_delete=models.CASCADE)
 
 class availableTime(models.Model):
     DAYS_CODE = (('mon','Monday'),
@@ -182,50 +223,10 @@ class availableTime(models.Model):
     allDay = models.BooleanField()
     availableStartTIme =  models.TimeField(auto_now=False, auto_now_add=False)
     availabelEndTIme =  models.TimeField(auto_now=False, auto_now_add=False)
-    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='availableTime',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='availableTime',on_delete=models.CASCADE)
 
 class notAvailableTime(models.Model):
     description= models.CharField(max_length = 255)
     # during = Period
-    healthcareservice = models.ForeignKey(HealthcareCategory,related_name='notAvailable',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='notAvailable',on_delete=models.CASCADE)
 
-
-class HealthcareService(models.Model):
-    #indentifier
-    active = models.BooleanField()
-    # providedBy = Reference(Organization)
-    # category = cODEABLEconcept
-    # types =cODEABLEconcept 
-    # speciality = cODEABLEconcept
-    # location = Refernce(Location)
-    name = models.CharField(max_length = 255)
-    comment = models.CharField(max_length = 255)
-    # "extraDetails": "Several assessments are required for these specialist services, and the waiting times can be greater than 3 months at times. Existing patients are prioritized when requesting appointments on the schedule."
-    #TODO: --> extraDetails = Markdown
-    #TODO: photo = Attachment
-    # Telecom = ContactPoint
-    #TODO coverageArea = ReferenceLocation
-    # serviceProvisionCode = COdeableConcept
-    #confused about elligibility
-    # TODO: eligibility 
-    #     code = COdeableCOncept
-    #     comment = MarkDown
-    
-    # program= COdeableCOncept 
-
-    #CONFUSED ABOUT CHARACTERISTIC
-    # characteristic= COdeableCOncept
-
-    # Communication= COdeableCOncept
-
-    # referralMethod= COdeableCOncept
-    appointmentRequired = models.BooleanField()
-    # availableTIme
-    #     daysOfWeek = code
-    #     allDay = boolean
-    #     availableStartTIme = time
-    #     availabelEndTIme = time
-    # notAvailable
-    #     description = string
-    #     during = period
-    availabilityExceptions = models.CharField(max_length = 255)
