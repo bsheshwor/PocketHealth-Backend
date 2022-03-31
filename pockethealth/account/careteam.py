@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+from account.models import User
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
 
 
@@ -36,6 +37,14 @@ class StatusCode(models.Model):
                    ('entered-in-error','Entered in Error'),)
     text = models.CharField(max_length=255, choices = STATUS_CODE)
     careteam = models.ForeignKey(CareTeam,related_name='status',on_delete=models.CASCADE)
+
+class Participant(models.Model):
+    user = models.ForeignKey(User, related_name= 'user', on_delete=models.CASCADE)
+    #  role = CodeableConcept
+    #TODO member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
+    # onBehalfOf = Refernce(Organization)
+    # period = Period 
+    pass
 
 class ParticipantRole(models.Model):
     ROLES_TYPES = (('375005','Sibling'),
@@ -77,14 +86,6 @@ class ParticipantRole(models.Model):
     participant = models.ForeignKey(Participant,related_name='role',on_delete=models.CASCADE)
 
 
-    
-class Participant(models.Model):
-    #  role = CodeableConcept
-    #TODO member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
-    # onBehalfOf = Refernce(Organization)
-    # period = Period 
-    pass
-
 class ReasonCode(models.Model):
 
     REASON_CODE = (('219006','Alcohol User'),
@@ -112,8 +113,8 @@ class ReasonCode(models.Model):
                     ('3712000','Degenerated eye'),
                     ('3716002','Thyroid goiter'),
                     ('4448006','Allergic headache	'),    
-                    ('4473006','Migraine with aura')
-                    ('9999999999','Others')
+                    ('4473006','Migraine with aura'),
+                    ('9999999999','Others'),
                     )
     text = models.CharField(max_length=255, choices = REASON_CODE)
     participant = models.ForeignKey(Participant,related_name='reasonCode',on_delete=models.CASCADE)
@@ -122,7 +123,7 @@ class ReasonCode(models.Model):
 class Annotation(models.Model):
     # Author
     time = models.DateTimeField()
-    text = models.CharField()
+    text = models.CharField(max_length=255)
     careteam = models.ForeignKey(CareTeam,related_name='note',on_delete=models.CASCADE)
 
 

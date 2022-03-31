@@ -1,10 +1,10 @@
 from django.db import models
 from django.conf import settings
 
-from account.organization import OrganizationContact, Organization
-from account.healthcareService import HealthCareService, notAvailableTime
-from account.location import Location
-from account.careteam import Participant, CareTeam
+# from account.organization import OrganizationContact, Organization
+# from account.healthcareService import HealthCareService, notAvailableTime
+# from account.location import Location
+# from account.careteam import Participant, CareTeam
 
 class MaritalStatus(models.Model):
     # coding(Coding)
@@ -61,6 +61,7 @@ class Contact(models.Model):
     # telecom = models.ForeignKey(ContactPoint,on_delete=models.CASCADE)
     # address = models.ForeignKey(Address,on_delete=models.CASCADE)
     gender = models.CharField(max_length=225, choices = GENDER_CODE,null=True, blank=True)
+    organization = models.ForeignKey("account.Organization", related_name='organization', on_delete=models.CASCADE)
     #TODO: organization(Reference(Organization))
     # period = models.ForeignKey(Period, on_delete=models.CASCADE)
 
@@ -99,7 +100,7 @@ class HumanName(models.Model):
     prefix = models.CharField(max_length=10,null=True, blank=True)
     suffix = models.CharField(max_length= 225,null=True, blank=True)
     contact = models.ForeignKey(Contact,related_name='name',on_delete=models.CASCADE)
-    oganizationcontact = models.ForeignKey(OrganizationContact,related_name='name',on_delete=models.CASCADE)
+    oganizationcontact = models.ForeignKey("account.OrganizationContact",related_name='name',on_delete=models.CASCADE)
 
     def save(self, args, **kwargs):
         self.text = self.given +" "+self.family
@@ -151,16 +152,16 @@ class ContactPoint(models.Model):
     value = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices = USE_CODE, null=True, blank=True)
     rank = models.IntegerField(null=True, blank=True)
-    organizationcontact = models.ForeignKey(OrganizationContact,related_name='telecom',on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization,related_name='telecom',on_delete=models.CASCADE)
-    healthcareservice = models.ForeignKey(HealthCareService,related_name='telecom',on_delete=models.CASCADE)
+    organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='telecom',on_delete=models.CASCADE)
+    organization = models.ForeignKey("account.Organization",related_name='telecom',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey("account.HealthCareService",related_name='telecom',on_delete=models.CASCADE, null=True, blank=True)
 
     # period = models.OneToOneField(Period,on_delete=models.CASCADE,null=True, blank=True)
 
 class Telecom(ContactPoint):
     contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE)
-    location = models.ForeignKey(Location,related_name='telecom',on_delete=models.CASCADE)
-    careteam = models.ForeignKey(CareTeam,related_name='telecom',on_delete=models.CASCADE)
+    location = models.ForeignKey('account.Location',related_name='telecom',on_delete=models.CASCADE)
+    careteam = models.ForeignKey('account.CareTeam',related_name='telecom',on_delete=models.CASCADE)
 
 class Address(models.Model):
     """
@@ -197,9 +198,9 @@ class Address(models.Model):
     postalCode = models.CharField(max_length=225,null=True, blank=True)
     country = models.CharField(max_length=225,null=True, blank=True)
     contact = models.ForeignKey(Contact,related_name='address',on_delete=models.CASCADE)
-    organizationcontact = models.ForeignKey(OrganizationContact,related_name='address',on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization,related_name='address',on_delete=models.CASCADE)
-    location = models.ForeignKey(Location,related_name='address',on_delete=models.CASCADE)
+    organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='address',on_delete=models.CASCADE)
+    organization = models.ForeignKey("account.Organization",related_name='address',on_delete=models.CASCADE)
+    location = models.ForeignKey("account.Location",related_name='address',on_delete=models.CASCADE)
 
 class Communication(models.Model):
     """
@@ -268,7 +269,7 @@ class Communication(models.Model):
     # user = models.ForeignKey(Patient, related_name="communication",on_delete= models.CASCADE)
     language = models.CharField(max_length=225, choices=LANGUAGE_CODE, default="en-US",null=True, blank=True)
     preferred = models.BooleanField()
-    healthcareservice = models.ForeignKey(HealthCareService,related_name='communication',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey("account.HealthCareService",related_name='communication',on_delete=models.CASCADE)
 
 class Link(models.Model):
     """
@@ -344,8 +345,8 @@ class Period(models.Model):
     address = models.ForeignKey(Address,related_name='period', on_delete= models.CASCADE,null=True, blank=True)
     humanname = models.ForeignKey(HumanName,related_name='period',on_delete=models.CASCADE)
     contact = models.ForeignKey(Contact,related_name='period', on_delete=models.CASCADE)
-    notavailabletime = models.ForeignKey(notAvailableTime,related_name='during',on_delete=models.CASCADE)
-    participant = models.ForeignKey(Participant,related_name='period',on_delete=models.CASCADE)
+    notavailabletime = models.ForeignKey("account.notAvailableTime",related_name='during',on_delete=models.CASCADE)
+    participant = models.ForeignKey("account.Participant",related_name='period',on_delete=models.CASCADE)
 
 #todo:typeclass (what to do?  more than 600 types)
 

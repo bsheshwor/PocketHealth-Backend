@@ -139,7 +139,7 @@ class Speciality(models.Model):
                 ('394612005','Urology'))
 
     text = models.CharField(max_length = 255, choices = SPECILAITY_CHOICES)
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='category',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='speciality',on_delete=models.CASCADE)
 
 class ServiceProvisionCode(models.Model):
     SERVICE_PROVISION_CODE = (('free','Free'),

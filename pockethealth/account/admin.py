@@ -6,7 +6,7 @@ from account.types import Period,ContactPoint,Deceased,Address,HumanName,Marital
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
 from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation, Author
-from account.locaiton import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Postion, HoursOfOperation
+from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
 
 
 admin.site.register(User)
@@ -50,8 +50,8 @@ admin.site.register(Status)
 admin.site.register(OperationalStatus)
 admin.site.register(Mode)
 admin.site.register(Types)
-admin.site.register(PhysicalLocationType)
-admin.site.register(Postion)
+# admin.site.register(PhysicalLocationType)
+admin.site.register(Position)
 admin.site.register(HoursOfOperation)
 
 

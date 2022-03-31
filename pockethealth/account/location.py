@@ -102,9 +102,12 @@ class PhysicalLocationType():
 class Position(models.Model):
     #WANT THIS TO BE STORED AUTOMATICALLY
     #TODO: --> make the longitude, latitude and altitude data storing process automatic
-    longitude = models.DecimalField()
-    latitude = models.DecimalField()
-    altitude = models.DecimalField()
+    longitude = models.DecimalField(max_digits = 255,
+                                    decimal_places = 5)
+    latitude = models.DecimalField(max_digits = 255,
+                                    decimal_places = 5)
+    altitude = models.DecimalField(max_digits = 255,
+                                    decimal_places = 5)
     location = models.ForeignKey(Location,related_name='position',on_delete=models.CASCADE)
 
 class HoursOfOperation(models.Model):
