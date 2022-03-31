@@ -78,6 +78,43 @@ class Deceased(models.Model):
     # deceasedDateTime = models.BooleanField()
 
 
+class RelatedPerson(models.Model):
+
+    RELATIONSHIP_CODE = (
+        ("C","Emergency Contact"),
+        ("E","Employer"),
+        ("F","Federal Agency"),
+        ("I","Insurance Company"),
+        ("N","Next-of-Kin"),
+        ("S","State Agency"),
+        ("U","Unknown")
+    )
+
+    GENDER_CODE = (
+        ("1","male"),
+        ("2","female"),
+        ("3","other"),
+        ("4","unknown")
+    )
+    # user = models.ForeignKey(User, related_name="related_person", on_delete = models.CASCADE)
+    # name = models.OneToOneField(HumanName,on_delete=models.CASCADE)
+    # address = models.OneToOneField(Address, on_delete= models.CASCADE)
+    # contact = models.OneToOneField(ContactPoint, on_delete= models.CASCADE)
+    g_code = models.CharField(max_length=15,null = True, blank = True)
+    gender = models.CharField(max_length=255, choices = GENDER_CODE, null = True)
+    r_code = models.CharField(max_length=15,null = True, blank = True)
+    relationship = models.CharField(max_length=255,choices=RELATIONSHIP_CODE, null = True)
+
+    def save(self, *args, **kwargs):
+        if self.gender != None:
+            for element in self.GENDER_CODE:
+                if element[1] == self.gender:
+                    self.g_code = element[0]
+        if self.relationship != None:
+            for element in self.RELATIONSHIP_CODE:
+                if element[1] == self.relationship:
+                    self.r_code = element[0]
+        super(RelatedPerson, self).save(*args, **kwargs)
 
 class HumanName(models.Model):
     """
@@ -101,6 +138,7 @@ class HumanName(models.Model):
     suffix = models.CharField(max_length= 225,null=True, blank=True)
     contact = models.ForeignKey(Contact,related_name='name',on_delete=models.CASCADE)
     oganizationcontact = models.ForeignKey("account.OrganizationContact",related_name='name',on_delete=models.CASCADE)
+    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_name', on_delete=models.CASCADE)
 
     def save(self, args, **kwargs):
         self.text = self.given +" "+self.family
@@ -155,6 +193,7 @@ class ContactPoint(models.Model):
     organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='telecom',on_delete=models.CASCADE)
     organization = models.ForeignKey("account.Organization",related_name='telecom',on_delete=models.CASCADE)
     healthcareservice = models.ForeignKey("account.HealthCareService",related_name='telecom',on_delete=models.CASCADE, null=True, blank=True)
+    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_contact_point', on_delete=models.CASCADE)
 
     # period = models.OneToOneField(Period,on_delete=models.CASCADE,null=True, blank=True)
 
@@ -201,6 +240,7 @@ class Address(models.Model):
     organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='address',on_delete=models.CASCADE)
     organization = models.ForeignKey("account.Organization",related_name='address',on_delete=models.CASCADE)
     location = models.ForeignKey("account.Location",related_name='address',on_delete=models.CASCADE)
+    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_address', on_delete=models.CASCADE)
 
 class Communication(models.Model):
     """
@@ -347,6 +387,7 @@ class Period(models.Model):
     contact = models.ForeignKey(Contact,related_name='period', on_delete=models.CASCADE)
     notavailabletime = models.ForeignKey("account.notAvailableTime",related_name='during',on_delete=models.CASCADE)
     participant = models.ForeignKey("account.Participant",related_name='period',on_delete=models.CASCADE)
+        
 
 #todo:typeclass (what to do?  more than 600 types)
 
