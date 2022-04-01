@@ -81,7 +81,7 @@ class Types(models.Model):
     text = models.CharField(max_length=255, choices = TYPE_CODE)
     location = models.ForeignKey(Location,related_name='types',on_delete=models.CASCADE)
 
-class PhysicalLocationType():
+class PhysicalLocationType(models.Model):
     PHYSICAL_CODE = (('si','Site'),
                      ('bu','Building'),
                      ('wi','Wing'),

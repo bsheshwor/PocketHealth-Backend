@@ -221,8 +221,8 @@ class availableTime(models.Model):
                  ('sun','Sunday'),)
     daysOfWeek = models.CharField(max_length = 255, choices = DAYS_CODE)
     allDay = models.BooleanField()
-    availableStartTIme =  models.TimeField(auto_now=False, auto_now_add=False)
-    availabelEndTIme =  models.TimeField(auto_now=False, auto_now_add=False)
+    availableStartTime =  models.TimeField(auto_now=False, auto_now_add=False)
+    availabelEndTime =  models.TimeField(auto_now=False, auto_now_add=False)
     healthcareservice = models.ForeignKey(HealthcareService,related_name='availableTime',on_delete=models.CASCADE)
 
 class notAvailableTime(models.Model):
