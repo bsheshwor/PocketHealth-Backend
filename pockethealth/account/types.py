@@ -22,9 +22,10 @@ class MaritalStatus(models.Model):
                        )
     
     # user = models.ForeignKey(Patient, related_name="marital_status",on_delete= models.CASCADE)
-    code = models.CharField(max_length=15,null=True, blank=True)               
+    # code = models.CharField(max_length=15,null=True, blank=True)               
     text = models.CharField(max_length=255, choices = MARRIAGE_CODING,null=True, blank=True)
-    
+    patient = models.ForeignKey("account.Patient", related_name='maritalStatus', on_delete=models.CASCADE)
+
 
     def save(self, *args, **kwargs):
         if self.text != None:
@@ -62,6 +63,7 @@ class Contact(models.Model):
     # address = models.ForeignKey(Address,on_delete=models.CASCADE)
     gender = models.CharField(max_length=225, choices = GENDER_CODE,null=True, blank=True)
     organization = models.ForeignKey("account.Organization", related_name='organization', on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient", related_name='contact', on_delete=models.CASCADE)
     #TODO: organization(Reference(Organization))
     # period = models.ForeignKey(Period, on_delete=models.CASCADE)
 
@@ -75,7 +77,9 @@ class Deceased(models.Model):
 
     # user = models.ForeignKey(Patient, related_name="deceased",on_delete= models.CASCADE)
     deceasedBoolean = models.BooleanField()
-    # deceasedDateTime = models.BooleanField()
+    deceasedDateTime = models.DateTimeField()
+    patient = models.ForeignKey("account.Patient", related_name='deceased', on_delete=models.CASCADE)
+
 
 
 class RelatedPerson(models.Model):
@@ -139,6 +143,8 @@ class HumanName(models.Model):
     contact = models.ForeignKey(Contact,related_name='name',on_delete=models.CASCADE)
     oganizationcontact = models.ForeignKey("account.OrganizationContact",related_name='name',on_delete=models.CASCADE)
     relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_name', on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient", related_name = 'name', on_delete=models.CASCADE)
+    practitioner = models.ForeignKey("account.Practitioner", related_name = 'name', on_delete=models.CASCADE)
 
     def save(self, args, **kwargs):
         self.text = self.given +" "+self.family
@@ -201,6 +207,9 @@ class Telecom(ContactPoint):
     contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE)
     location = models.ForeignKey('account.Location',related_name='telecom',on_delete=models.CASCADE)
     careteam = models.ForeignKey('account.CareTeam',related_name='telecom',on_delete=models.CASCADE)
+    patient = models.ForeignKey('account.Patient',related_name='telecom',on_delete=models.CASCADE)
+    practitioner = models.ForeignKey('account.Practitioner',related_name='telecom',on_delete=models.CASCADE)
+
 
 class Address(models.Model):
     """
@@ -241,6 +250,9 @@ class Address(models.Model):
     organization = models.ForeignKey("account.Organization",related_name='address',on_delete=models.CASCADE)
     location = models.ForeignKey("account.Location",related_name='address',on_delete=models.CASCADE)
     relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_address', on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient", related_name = 'address', on_delete=models.CASCADE)
+    practitioner = models.ForeignKey('account.Practitioner',related_name='address',on_delete=models.CASCADE)
+
 
 class Communication(models.Model):
     """
@@ -310,6 +322,9 @@ class Communication(models.Model):
     language = models.CharField(max_length=225, choices=LANGUAGE_CODE, default="en-US",null=True, blank=True)
     preferred = models.BooleanField()
     healthcareservice = models.ForeignKey("account.HealthCareService",related_name='communication',on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient",related_name='communication',on_delete=models.CASCADE)
+    practitioner = models.ForeignKey('account.Practitioner',related_name='communication',on_delete=models.CASCADE)
+
 
 class Link(models.Model):
     """
@@ -327,6 +342,7 @@ class Link(models.Model):
     
     # user = models.ForeignKey(Patient, related_name="link", on_delete= models.CASCADE,null=True, blank=True)
     link_type = models.CharField(max_length=225, choices=TYPE_CODE,null=True, blank=True)
+    patient = models.ForeignKey("account.Patient",related_name='link',on_delete=models.CASCADE)
 
 
 #TODO : -->
@@ -377,6 +393,65 @@ class Category(models.Model):
                    )
     text = models.CharField(max_length=225, null=True, blank = True)
 
+
+
+class Qualification(models.Model):
+    # identifier
+    # code
+    # period
+    # issuer
+    practitioner = models.ForeignKey("account.Practitioner",related_name='qualification',on_delete=models.CASCADE)
+    pass
+
+
+class QualificationCodeableConcept(models.Model):
+    QUALIFICATION_CODE = (('AA','Associate of Arts'),
+                          ('AAS','Associate of Applied Science'),
+                          ('ABA','Associate of Business Administration'),
+                          ('AE','Associate of Engineering'),
+                          ('AS','Associate of Science'),
+                          ('BA','Bachelor of Arts'),
+                          ('BBA','Bachelor of Business Administration'),
+                          ('BE','Bachelor or Engineering'),
+                          ('BFA','Bachelor of Fine Arts'),
+                          ('BN','Bachelor of Nursing'),
+                          ('BS','Bachelor of Science'),
+                          ('BSN','Bachelor on Science - Nursing'),
+                          ('CANP','Certified Adult Nurse Practitioner'),
+                          ('BT','Bachelor of Theology'),
+                          ('CMA','Certified Medical Assistant'),
+                          ('CNM','Certified Nurse Midwife'),
+                          ('CNP','Certified Nurse Practitioner'),
+                          ('CNS','Certified Nurse Specialist'),
+                          ('CPNP','Certified Pediatric Nurse Practitioner'),
+                          ('CRN','Certified Registered Nurse'),
+                          ('CTR','Certified Tumor Registrar'),
+                          ('DO','Doctor of Osteopathy'),
+                          ('EMT','Emergency Medical Technician'),
+                          ('EMTP','Emergency Medical Technician - Paramedic'),
+                          ('FPNP','Family Practice Nurse Practitioner'),
+                          ('JD','Juris Doctor'),
+                          ('MD','Doctor of Medicine'),
+                          ('MDA','Medical Assistant'),
+                          ('MSN','Master of Science - Nursing'),
+                          ('MT','Medical Technician'),
+                          ('MTH','Master of Theology'),
+                          ('NP','Nurse Practitioner'),
+                          ('PA','Physician Assistant'),
+                          ('PHD','Doctor of Philosophy'),
+                          ('PHS','Doctor of Science'),
+                          ('PN','Advanced Practice Nurse'),
+                          ('PharmD','Doctor of Pharmacy'),
+                          ('RMA','Registered Medical Assistant'),
+                          ('RN','Registered Nurse'),
+                          ('RPH','Registered Pharmacist'),
+                          ('SEC','Secretarial Certificate'),
+                          ('TS','Trade School Graduate'),
+                        )
+    text = models.CharField(max_length = 255, null= True, blank = True)
+    qualification = models.ForeignKey(Qualification,related_name='code',on_delete=models.CASCADE)
+
+
 class Period(models.Model):
     # user = models.ForeignKey(Patient, related_name="period",on_delete= models.CASCADE)
     start = models.DateTimeField(auto_now_add=True,null=True, blank=True)
@@ -387,8 +462,5 @@ class Period(models.Model):
     contact = models.ForeignKey(Contact,related_name='period', on_delete=models.CASCADE)
     notavailabletime = models.ForeignKey("account.notAvailableTime",related_name='during',on_delete=models.CASCADE)
     participant = models.ForeignKey("account.Participant",related_name='period',on_delete=models.CASCADE)
-        
+    qualification = models.ForeignKey(Qualification,related_name='period',on_delete=models.CASCADE)
 
-#todo:typeclass (what to do?  more than 600 types)
-
-#speciality: ??

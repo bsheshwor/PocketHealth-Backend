@@ -44,20 +44,25 @@ class UserManager(BaseUserManager):
 
 class PatientManager(BaseUserManager):
 
-    def create_patient(self, first_name, last_name, email, occupation, password = None):
+    def create_patient(self, email,active, name,telecom,gender,birthDate,decreased,address,maritalStatus,contact, communication,managingOrganization,link, password = None):
         if email is None:
             raise TypeError('Users must have an email address')
-        patient = Patient(first_name= first_name, last_name=last_name, email = self.normalize_email(email), occupation=occupation)
+        patient = Patient(email=self.normalize_email(email),active=active, name=name,
+                          telecom=telecom,gender=gender,birthDate=birthDate,
+                          decreased=decreased,address=address,maritalStatus=maritalStatus,
+                          contact=contact, communication=communication,
+                          managingOrganization=managingOrganization,link=link, 
+                          occupation=occupation)
         patient.set_password(password)
         patient.save()
         return patient
 
 class PractitionerManager(BaseUserManager):
     
-    def create_practitioner(self, first_name, last_name, email, hospital_name, password = None):
+    def create_practitioner(self, active, name,email, telecom, address, gender, birthDate, qualification, communication, password = None):
         if email is None:
             raise TypeError('Users must have an email address.')
-        doctor = Practitioner(first_name=first_name, last_name=last_name, email=self.normalize_email(email), hospital_name=hospital_name)
+        doctor = Practitioner(active=active, name=name, email=self.normalize_email(email), telecom=telecom, address=address, gender=gender, birthDate=birthDate, qualification=qualification, communication=communication)
         doctor.set_password(password)
         doctor.save()
         return doctor
@@ -107,22 +112,59 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         return self.email
 
-class Patient(User, PermissionsMixin):
-    # user = models.OneToOneField(User,on_delete=models.CASCADE, related_name="customer_account")
-    occupation = models.CharField(db_index=True, max_length=100)
+class Patient(models.Model):
+    GENDER_CODE = (
+        ("1","male"),
+        ("2","female"),
+        ("3","other"),
+        ("4","unknown")
+    )
+    user = models.OneToOneField(User,on_delete=models.CASCADE, related_name="patient")
+    active = models.BooleanField(db_index=True)
+    email = models.EmailField(db_index=True, unique=True)
+
+    # name
+    # telecom
+    gender = models.CharField(db_index=True, max_length=100, choices = GENDER_CODE)
+    birthDate = models.DateField(db_index=True)
+    # deceased
+    # address
+    # maritalStatus
+    #TODO: --> multipleBirth
+    #TODO: --> photo
+    # contact
+    # communication 
+    # TODO:--> generalPractitioner
+    # managingOrganization
+    # link
+ 
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name','occupation' ]
+    REQUIRED_FIELDS = ['active', 'email','name','telecom','gender','birthDate','decreased','address','maritalStatus','contact', 'communication','managingOrganization','link']
 
     objects = PatientManager()
 
     def __str__(self):
-        return self.first_name
+        return self.email
 
-class Practitioner(User, PermissionsMixin):
-    # user = models.OneToOneField(UserProfile,on_delete=models.CASCADE, related_name="doctor_account")
-    hospital_name = models.CharField(db_index=True, max_length=100,null=True, blank=True)
-
+class Practitioner(models.Model):
+    GENDER_CODE = (
+        ("1","male"),
+        ("2","female"),
+        ("3","other"),
+        ("4","unknown")
+    )
+    #identifier
+    user = models.OneToOneField(User,on_delete=models.CASCADE, related_name="practitioner")
+    active = models.BooleanField(db_index=True, max_length=100,null=True, blank=True)
+    # name 
+    # telecom
+    # address
+    gender = models.CharField(db_index=True, max_length=100, choices = GENDER_CODE)
+    birthDate = models.DateField(db_index=True)
+    # photo
+    # qualification
+    # communication
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'hospital_name']
 
@@ -130,17 +172,3 @@ class Practitioner(User, PermissionsMixin):
 
     def __str__(self):
         return self.first_name
-
-# class Period(models.Model):
-#     """
-#     This function is used to return the range of datetime.
-#     It is not same as duration.
-#     inputs:
-#         start: start datetime of certain period.
-#         end: end datetime of certain period.
-
-#     return: range(start:end)
-#     """
-#     user = models.ForeignKey(Customer, related_name="period",on_delete= models.CASCADE)
-#     start = models.DateTimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
-#     end = models.DateTimeField(auto_now=False, auto_now_add=False,null=True, blank=True)

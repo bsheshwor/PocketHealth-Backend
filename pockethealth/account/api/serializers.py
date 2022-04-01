@@ -22,24 +22,20 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
     #     write_only = True
     # )
 
-    # period = serializers.StringRelatedField(read_only=True)
-    # contact_point = serializers.StringRelatedField(read_only=True)
-    # deceased = serializers.StringRelatedField(read_only=True)
-    # address = serializers.StringRelatedField(read_only=True)
-    # human_name = serializers.StringRelatedField(read_only=True)
-    # marital_status = serializers.StringRelatedField(read_only=True)
-    # contact = serializers.StringRelatedField(read_only=True)
-    # communication = serializers.StringRelatedField(read_only=True)
-    # link = serializers.StringRelatedField(read_only=True)
+    deceased = serializers.StringRelatedField(read_only=True)
+    address = serializers.StringRelatedField(read_only=True)
+    maritalStatus = serializers.StringRelatedField(read_only=True)
+    contact = serializers.StringRelatedField(read_only=True)
+    communication = serializers.StringRelatedField(read_only=True)
+    managingOrganization = serializers.StringRelatedField(read_only=True)
 
-    # token = serializers.CharField(max_length = 255, read_only=True)
+    token = serializers.CharField(max_length = 255, read_only=True)
     
     class Meta:
         model = Patient
-        # fields = ('first_name','last_name', 'email', 'password','occupation',
-        #           'period','contact_point','deceased','address','human_name',
-        #           'marital_status','contact', 'communication','link','token')
-        fields = '__all__'
+        fields = ('active','email', 'name','telecom',
+                  'gender','birthDate','deceased','address','maritalStatus',
+                  'contact', 'communication','managingOrganization','link','password','token')
     def create(self, validated_data):
         return Patient.objects.create_patient(**validated_data)
 
@@ -49,6 +45,11 @@ class PractitionerRegistrationSerializer(serializers.ModelSerializer):
         min_length = 8,
         write_only = True
     )
+    name = serializers.StringRelatedField(read_only=True)
+    telecom = serializers.StringRelatedField(read_only=True)
+    address = serializers.StringRelatedField(read_only=True)
+    qualification = serializers.StringRelatedField(read_only=True)
+    communication = serializers.StringRelatedField(read_only=True)
 
     # password_confirm = serializers.CharField(
     #     max_length = 150,
@@ -60,7 +61,7 @@ class PractitionerRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Practitioner
-        fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token')
+        fields = ('active','name','telecom','address','gender','birthDate','qualification','communication','password','token')
 
     def create(self, validated_data):
         return Practitioner.objects.create_doctor(**validated_data)

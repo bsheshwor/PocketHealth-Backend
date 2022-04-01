@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
+from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link,Qualification
 from account.careteam import CareTeam, Participant 
 from account.healthcareService import HealthcareService
 from account.location import Location
@@ -29,6 +29,8 @@ class Organization(models.Model):
     participant = models.ForeignKey(Participant,related_name='onBehalfOf',on_delete=models.CASCADE)
     healthcareservice = models.ForeignKey(HealthcareService,related_name='providedBy',on_delete=models.CASCADE)
     location = models.ForeignKey(Location,related_name='managingOrganization',on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient",related_name='managingOrganization',on_delete=models.CASCADE)
+    qualification = models.ForeignKey(Qualification,related_name='issuer',on_delete=models.CASCADE)
 
     # telecom = models.CHar(contactpoint)
     #Address(Address)

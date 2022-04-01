@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from account.models import User, Patient, Practitioner
-from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link,Telecom,RelatedPerson
+from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link,Telecom,RelatedPerson,Qualification, QualificationCodeableConcept
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
 from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation, Author
@@ -23,6 +23,8 @@ admin.site.register(Communication)
 admin.site.register(Telecom)
 admin.site.register(Link)
 admin.site.register(RelatedPerson)
+admin.site.register(Qualification)
+admin.site.register(QualificationCodeableConcept)
 
 
 admin.site.register(Organization)
