@@ -21,10 +21,10 @@ class Organization(models.Model):
                          ('bus','Non-Healthcare Business or Corporation'),
                          ('other','Other'),)
 
-    active = models.BooleanField()
-    types = models.CharField(max_length= 255, choices= ORGANIZATION_TYPE)
-    name = models.CharField(max_length=255)
-    alias = models.CharField(max_length=255)
+    active = models.BooleanField(null=True, blank=True)
+    types = models.CharField(max_length= 255, choices= ORGANIZATION_TYPE,null=True, blank=True)
+    name = models.CharField(max_length=255,null=True, blank=True)
+    alias = models.CharField(max_length=255,null=True, blank=True)
     careteam = models.ForeignKey(CareTeam,related_name='managingOrganization',on_delete=models.CASCADE)
     participant = models.ForeignKey(Participant,related_name='onBehalfOf',on_delete=models.CASCADE)
     healthcareservice = models.ForeignKey(HealthcareService,related_name='providedBy',on_delete=models.CASCADE)
@@ -42,7 +42,7 @@ class OrganizationContact(models.Model):
                     ('PAYOR','Payor'),
                     ('PATINF','Patient'),
                     ('PRESS','Press'),)
-    purpose =  models.CharField(max_length = 255, choices = PURPOSE_TYPE)
+    purpose =  models.CharField(max_length = 255, choices = PURPOSE_TYPE,null=True, blank=True)
     organization = models.ForeignKey(Organization,related_name='contact',on_delete=models.CASCADE)
 
     # name = HumanName

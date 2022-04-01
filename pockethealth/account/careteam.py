@@ -35,7 +35,7 @@ class StatusCode(models.Model):
                    ('suspended','Suspended'),
                    ('inactive','Inactive'),
                    ('entered-in-error','Entered in Error'),)
-    text = models.CharField(max_length=255, choices = STATUS_CODE)
+    text = models.CharField(max_length=255, choices = STATUS_CODE,null=True, blank=True)
     careteam = models.ForeignKey(CareTeam,related_name='status',on_delete=models.CASCADE)
 
 class Participant(models.Model):
@@ -82,7 +82,7 @@ class ParticipantRole(models.Model):
                     ('127850001','Wife'),
                     ('133933007','NewBorn'),
                     ('133936004','Adult'))
-    text = models.CharField(max_length=255, choices = ROLES_TYPES)
+    text = models.CharField(max_length=255, choices = ROLES_TYPES,null=True, blank=True)
     participant = models.ForeignKey(Participant,related_name='role',on_delete=models.CASCADE)
 
 
@@ -116,19 +116,19 @@ class ReasonCode(models.Model):
                     ('4473006','Migraine with aura'),
                     ('9999999999','Others'),
                     )
-    text = models.CharField(max_length=255, choices = REASON_CODE)
+    text = models.CharField(max_length=255, choices = REASON_CODE,null=True, blank=True)
     participant = models.ForeignKey(Participant,related_name='reasonCode',on_delete=models.CASCADE)
 
 
 class Annotation(models.Model):
     # Author
-    time = models.DateTimeField()
-    text = models.CharField(max_length=255)
+    time = models.DateTimeField(null=True, blank=True)
+    text = models.CharField(max_length=255,null=True, blank=True)
     careteam = models.ForeignKey(CareTeam,related_name='note',on_delete=models.CASCADE)
 
 
 class Author(models.Model):
     #TODO authorReference = Reference(Practitioiner| Patient| RelatedPerso|Organization)
-    authorString = models.CharField(max_length=255)
+    authorString = models.CharField(max_length=255,null=True, blank=True)
     Annotation = models.ForeignKey(Annotation,related_name='author',on_delete=models.CASCADE)
 

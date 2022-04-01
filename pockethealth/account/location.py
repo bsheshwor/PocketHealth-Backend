@@ -27,7 +27,7 @@ class Status(models.Model):
     STATUS_CODE = (('active','Active'),
                    ('suspended','Suspended'),
                    ('inactive','Inactive'),)
-    text = models.CharField(max_length=255, choices = STATUS_CODE)
+    text = models.CharField(max_length=255, choices = STATUS_CODE,null=True, blank=True)
     location = models.ForeignKey(Location,related_name='status',on_delete=models.CASCADE)
 
 class OperationalStatus(models.Model):
@@ -37,7 +37,7 @@ class OperationalStatus(models.Model):
                                ('K','Contaminated'),
                                ('O','Occupied'),
                                ('U','Unoccupied'),)
-    text = models.CharField(max_length=255, choices = OPERATIONAL_STATUS_CODE)
+    text = models.CharField(max_length=255, choices = OPERATIONAL_STATUS_CODE,null=True, blank=True)
     location = models.ForeignKey(Location,related_name='operationalStatus',on_delete=models.CASCADE)
 
 
@@ -45,7 +45,7 @@ class Mode(models.Model):
     MODE_CODE = (('instance','Instance'),
                  ('kind','Kind'),
                  )
-    text = models.CharField(max_length=255, choices = MODE_CODE)
+    text = models.CharField(max_length=255, choices = MODE_CODE,null=True, blank=True)
     location = models.ForeignKey(Location,related_name='mode',on_delete=models.CASCADE)
 
 class Types(models.Model):
@@ -78,7 +78,7 @@ class Types(models.Model):
                  ('CHEST','Chest unit'),
                  ('EPIL','Epilepsy unit'),
                  )
-    text = models.CharField(max_length=255, choices = TYPE_CODE)
+    text = models.CharField(max_length=255, choices = TYPE_CODE,null=True, blank=True)
     location = models.ForeignKey(Location,related_name='types',on_delete=models.CASCADE)
 
 class PhysicalLocationType(models.Model):
@@ -96,18 +96,18 @@ class PhysicalLocationType(models.Model):
                      ('rd','Road'),
                      ('area','Area'),
                      ('jdn','Jurisdiction'),)
-    text = models.CharField(max_length=255, choices = PHYSICAL_CODE)
+    text = models.CharField(max_length=255, choices = PHYSICAL_CODE,null=True, blank=True)
     location = models.ForeignKey(Location,related_name='physicalType',on_delete=models.CASCADE)
 
 class Position(models.Model):
     #WANT THIS TO BE STORED AUTOMATICALLY
     #TODO: --> make the longitude, latitude and altitude data storing process automatic
     longitude = models.DecimalField(max_digits = 255,
-                                    decimal_places = 5)
+                                    decimal_places = 5,null=True, blank=True)
     latitude = models.DecimalField(max_digits = 255,
-                                    decimal_places = 5)
+                                    decimal_places = 5,null=True, blank=True)
     altitude = models.DecimalField(max_digits = 255,
-                                    decimal_places = 5)
+                                    decimal_places = 5,null=True, blank=True)
     location = models.ForeignKey(Location,related_name='position',on_delete=models.CASCADE)
 
 class HoursOfOperation(models.Model):
@@ -118,8 +118,8 @@ class HoursOfOperation(models.Model):
                  ('fri','Friday'),
                  ('sat','Saturday'),
                  ('sun','Sunday'),)
-    daysOfWeek = models.CharField(max_length=255, choices = DAYS_CODE)
-    allDay = models.BooleanField()
-    openingTime = models.TimeField(auto_now=False, auto_now_add=False)
-    closingTime = models.TimeField(auto_now=False, auto_now_add=False)
+    daysOfWeek = models.CharField(max_length=255, choices = DAYS_CODE,null=True, blank=True)
+    allDay = models.BooleanField(null=True, blank=True)
+    openingTime = models.TimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
+    closingTime = models.TimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
     location = models.ForeignKey(Location,related_name='hoursOfOperation',on_delete=models.CASCADE)
