@@ -24,7 +24,7 @@ class MaritalStatus(models.Model):
     # user = models.ForeignKey(Patient, related_name="marital_status",on_delete= models.CASCADE)
     # code = models.CharField(max_length=15,null=True, blank=True)               
     text = models.CharField(max_length=255, choices = MARRIAGE_CODING,null=True, blank=True)
-    patient = models.ForeignKey("account.Patient", related_name='maritalStatus', on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient", related_name='maritalStatus', on_delete=models.CASCADE,null=True, blank=True)
 
 
     def save(self, *args, **kwargs):
@@ -63,7 +63,7 @@ class Contact(models.Model):
     # address = models.ForeignKey(Address,on_delete=models.CASCADE)
     gender = models.CharField(max_length=225, choices = GENDER_CODE,null=True, blank=True)
     organization = models.ForeignKey("account.Organization", related_name='organization', on_delete=models.CASCADE)
-    patient = models.ForeignKey("account.Patient", related_name='contact', on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient", related_name='contact', on_delete=models.CASCADE,null=True, blank=True)
     #TODO: organization(Reference(Organization))
     # period = models.ForeignKey(Period, on_delete=models.CASCADE)
 
@@ -78,7 +78,7 @@ class Deceased(models.Model):
     # user = models.ForeignKey(Patient, related_name="deceased",on_delete= models.CASCADE)
     deceasedBoolean = models.BooleanField()
     deceasedDateTime = models.DateTimeField()
-    patient = models.ForeignKey("account.Patient", related_name='deceased', on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient", related_name='deceased', on_delete=models.CASCADE,null=True, blank=True)
 
 
 
@@ -107,7 +107,7 @@ class RelatedPerson(models.Model):
     g_code = models.CharField(max_length=15,null = True, blank = True)
     gender = models.CharField(max_length=255, choices = GENDER_CODE, null = True)
     r_code = models.CharField(max_length=15,null = True, blank = True)
-    relationship = models.CharField(max_length=255,choices=RELATIONSHIP_CODE, null = True)
+    relationship = models.CharField(max_length=255,choices=RELATIONSHIP_CODE,null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.gender != None:
@@ -140,11 +140,11 @@ class HumanName(models.Model):
     given = models.CharField(max_length=225,null=True, blank=True)
     prefix = models.CharField(max_length=10,null=True, blank=True)
     suffix = models.CharField(max_length= 225,null=True, blank=True)
-    contact = models.ForeignKey(Contact,related_name='name',on_delete=models.CASCADE)
-    oganizationcontact = models.ForeignKey("account.OrganizationContact",related_name='name',on_delete=models.CASCADE)
-    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_name', on_delete=models.CASCADE)
-    patient = models.ForeignKey("account.Patient", related_name = 'name', on_delete=models.CASCADE)
-    practitioner = models.ForeignKey("account.Practitioner", related_name = 'name', on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact,related_name='name',on_delete=models.CASCADE,null=True, blank=True)
+    oganizationcontact = models.ForeignKey("account.OrganizationContact",related_name='name',on_delete=models.CASCADE,null=True, blank=True)
+    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_name', on_delete=models.CASCADE,null=True, blank=True)
+    patient = models.ForeignKey("account.Patient", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
+    practitioner = models.ForeignKey("account.Practitioner", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
 
     def save(self, args, **kwargs):
         self.text = self.given +" "+self.family
@@ -196,19 +196,22 @@ class ContactPoint(models.Model):
     value = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices = USE_CODE, null=True, blank=True)
     rank = models.IntegerField(null=True, blank=True)
-    organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='telecom',on_delete=models.CASCADE)
-    organization = models.ForeignKey("account.Organization",related_name='telecom',on_delete=models.CASCADE)
+    organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    organization = models.ForeignKey("account.Organization",related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
     healthcareservice = models.ForeignKey("account.HealthCareService",related_name='telecom',on_delete=models.CASCADE, null=True, blank=True)
-    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_contact_point', on_delete=models.CASCADE)
-
+    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_contact_point', on_delete=models.CASCADE,null=True, blank=True)
     # period = models.OneToOneField(Period,on_delete=models.CASCADE,null=True, blank=True)
 
+    # @property
+    # def periods(self):
+    #     return self.period_set.all()
+
 class Telecom(ContactPoint):
-    contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE)
-    location = models.ForeignKey('account.Location',related_name='telecom',on_delete=models.CASCADE)
-    careteam = models.ForeignKey('account.CareTeam',related_name='telecom',on_delete=models.CASCADE)
-    patient = models.ForeignKey('account.Patient',related_name='telecom',on_delete=models.CASCADE)
-    practitioner = models.ForeignKey('account.Practitioner',related_name='telecom',on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    location = models.ForeignKey('account.Location',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    careteam = models.ForeignKey('account.CareTeam',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    patient = models.ForeignKey('account.Patient',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    practitioner = models.ForeignKey('account.Practitioner',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Address(models.Model):
@@ -245,13 +248,13 @@ class Address(models.Model):
     state = models.CharField(max_length=225,null=True, blank=True)
     postalCode = models.CharField(max_length=225,null=True, blank=True)
     country = models.CharField(max_length=225,null=True, blank=True)
-    contact = models.ForeignKey(Contact,related_name='address',on_delete=models.CASCADE)
-    organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='address',on_delete=models.CASCADE)
-    organization = models.ForeignKey("account.Organization",related_name='address',on_delete=models.CASCADE)
-    location = models.ForeignKey("account.Location",related_name='address',on_delete=models.CASCADE)
-    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_address', on_delete=models.CASCADE)
-    patient = models.ForeignKey("account.Patient", related_name = 'address', on_delete=models.CASCADE)
-    practitioner = models.ForeignKey('account.Practitioner',related_name='address',on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact,related_name='address',on_delete=models.CASCADE,null=True, blank=True)
+    organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='address',on_delete=models.CASCADE,null=True, blank=True)
+    organization = models.ForeignKey("account.Organization",related_name='address',on_delete=models.CASCADE,null=True, blank=True)
+    location = models.ForeignKey("account.Location",related_name='address',on_delete=models.CASCADE,null=True, blank=True)
+    relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_address', on_delete=models.CASCADE,null=True, blank=True)
+    patient = models.ForeignKey("account.Patient", related_name = 'address', on_delete=models.CASCADE,null=True, blank=True)
+    practitioner = models.ForeignKey('account.Practitioner',related_name='address',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Communication(models.Model):
@@ -321,9 +324,9 @@ class Communication(models.Model):
     # user = models.ForeignKey(Patient, related_name="communication",on_delete= models.CASCADE)
     language = models.CharField(max_length=225, choices=LANGUAGE_CODE, default="en-US",null=True, blank=True)
     preferred = models.BooleanField()
-    healthcareservice = models.ForeignKey("account.HealthCareService",related_name='communication',on_delete=models.CASCADE)
-    patient = models.ForeignKey("account.Patient",related_name='communication',on_delete=models.CASCADE)
-    practitioner = models.ForeignKey('account.Practitioner',related_name='communication',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey("account.HealthCareService",related_name='communication',on_delete=models.CASCADE,null=True, blank=True)
+    patient = models.ForeignKey("account.Patient",related_name='communication',on_delete=models.CASCADE,null=True, blank=True)
+    practitioner = models.ForeignKey('account.Practitioner',related_name='communication',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Link(models.Model):
@@ -342,7 +345,7 @@ class Link(models.Model):
     
     # user = models.ForeignKey(Patient, related_name="link", on_delete= models.CASCADE,null=True, blank=True)
     link_type = models.CharField(max_length=225, choices=TYPE_CODE,null=True, blank=True)
-    patient = models.ForeignKey("account.Patient",related_name='link',on_delete=models.CASCADE)
+    patient = models.ForeignKey("account.Patient",related_name='link',on_delete=models.CASCADE,null=True, blank=True)
 
 
 #TODO : -->
@@ -400,7 +403,7 @@ class Qualification(models.Model):
     # code
     # period
     # issuer
-    practitioner = models.ForeignKey("account.Practitioner",related_name='qualification',on_delete=models.CASCADE)
+    practitioner = models.ForeignKey("account.Practitioner",related_name='qualification',on_delete=models.CASCADE,null=True, blank=True)
     pass
 
 
@@ -449,18 +452,18 @@ class QualificationCodeableConcept(models.Model):
                           ('TS','Trade School Graduate'),
                         )
     text = models.CharField(max_length = 255, null= True, blank = True)
-    qualification = models.ForeignKey(Qualification,related_name='code',on_delete=models.CASCADE)
+    qualification = models.ForeignKey(Qualification,related_name='code',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Period(models.Model):
     # user = models.ForeignKey(Patient, related_name="period",on_delete= models.CASCADE)
     start = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     end = models.DateTimeField(auto_now_add=True,null=True, blank=True)
-    contactpoint = models.OneToOneField(ContactPoint,related_name='period',on_delete=models.CASCADE)
-    address = models.ForeignKey(Address,related_name='period', on_delete= models.CASCADE)
-    humanname = models.ForeignKey(HumanName,related_name='period',on_delete=models.CASCADE)
-    contact = models.ForeignKey(Contact,related_name='period', on_delete=models.CASCADE)
-    notavailabletime = models.ForeignKey("account.notAvailableTime",related_name='during',on_delete=models.CASCADE)
-    participant = models.ForeignKey("account.Participant",related_name='period',on_delete=models.CASCADE)
-    qualification = models.ForeignKey(Qualification,related_name='period',on_delete=models.CASCADE)
+    contactpoint = models.ForeignKey(ContactPoint,related_name='period',on_delete=models.CASCADE,null=True, blank=True)
+    address = models.ForeignKey(Address,related_name='period', on_delete= models.CASCADE,null=True, blank=True)
+    humanname = models.ForeignKey(HumanName,related_name='period',on_delete=models.CASCADE,null=True, blank=True)
+    contact = models.ForeignKey(Contact,related_name='period', on_delete=models.CASCADE,null=True, blank=True)
+    notavailabletime = models.ForeignKey("account.notAvailableTime",related_name='during',on_delete=models.CASCADE,null=True, blank=True)
+    participant = models.ForeignKey("account.Participant",related_name='period',on_delete=models.CASCADE,null=True, blank=True)
+    qualification = models.ForeignKey(Qualification,related_name='period',on_delete=models.CASCADE,null=True, blank=True)
 

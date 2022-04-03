@@ -36,10 +36,10 @@ class StatusCode(models.Model):
                    ('inactive','Inactive'),
                    ('entered-in-error','Entered in Error'),)
     text = models.CharField(max_length=255, choices = STATUS_CODE,null=True, blank=True)
-    careteam = models.ForeignKey(CareTeam,related_name='status',on_delete=models.CASCADE)
+    careteam = models.ForeignKey(CareTeam,related_name='status',on_delete=models.CASCADE,null=True, blank=True)
 
 class Participant(models.Model):
-    user = models.ForeignKey(User, related_name= 'user', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name= 'user', on_delete=models.CASCADE,null=True, blank=True)
     #  role = CodeableConcept
     #TODO member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
     # onBehalfOf = Refernce(Organization)
@@ -83,7 +83,7 @@ class ParticipantRole(models.Model):
                     ('133933007','NewBorn'),
                     ('133936004','Adult'))
     text = models.CharField(max_length=255, choices = ROLES_TYPES,null=True, blank=True)
-    participant = models.ForeignKey(Participant,related_name='role',on_delete=models.CASCADE)
+    participant = models.ForeignKey(Participant,related_name='role',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class ReasonCode(models.Model):
@@ -117,7 +117,7 @@ class ReasonCode(models.Model):
                     ('9999999999','Others'),
                     )
     text = models.CharField(max_length=255, choices = REASON_CODE,null=True, blank=True)
-    participant = models.ForeignKey(Participant,related_name='reasonCode',on_delete=models.CASCADE)
+    participant = models.ForeignKey(Participant,related_name='reasonCode',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Annotation(models.Model):
@@ -130,5 +130,5 @@ class Annotation(models.Model):
 class Author(models.Model):
     #TODO authorReference = Reference(Practitioiner| Patient| RelatedPerso|Organization)
     authorString = models.CharField(max_length=255,null=True, blank=True)
-    Annotation = models.ForeignKey(Annotation,related_name='author',on_delete=models.CASCADE)
+    Annotation = models.ForeignKey(Annotation,related_name='author',on_delete=models.CASCADE,null=True, blank=True)
 

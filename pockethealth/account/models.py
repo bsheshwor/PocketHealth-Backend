@@ -122,7 +122,7 @@ class Patient(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE, related_name="patient")
     active = models.BooleanField(db_index=True)
     email = models.EmailField(db_index=True, unique=True)
-
+    
     # name
     # telecom
     gender = models.CharField(db_index=True, max_length=100, choices = GENDER_CODE)

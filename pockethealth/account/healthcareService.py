@@ -84,7 +84,7 @@ class HealthcareCategory(models.Model):
                     ("33","Transport"),
                    )
     text = models.CharField(max_length = 255, choices = CATEGORY_TYPE,null=True, blank=True)
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='category',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='category',on_delete=models.CASCADE,null=True, blank=True)
 
 class Type(models.Model):
     TYPE_CHOICES = (('5','Case Management for Older Persons	'),	
@@ -116,7 +116,7 @@ class Type(models.Model):
 				('410','Pregnancy'))
 
     text = models.CharField(max_length = 255, choices = TYPE_CHOICES,null=True, blank=True)
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='types',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='types',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Speciality(models.Model):
@@ -139,14 +139,14 @@ class Speciality(models.Model):
                 ('394612005','Urology'))
 
     text = models.CharField(max_length = 255, choices = SPECILAITY_CHOICES,null=True, blank=True)
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='speciality',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='speciality',on_delete=models.CASCADE,null=True, blank=True)
 
 class ServiceProvisionCode(models.Model):
     SERVICE_PROVISION_CODE = (('free','Free'),
                               ('disc','Discounts Available'),
                               ('cost','Fees apply'),)
     text = models.CharField(max_length = 255, choices = SERVICE_PROVISION_CODE,null=True, blank=True)
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='serviceProvisionCode',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='serviceProvisionCode',on_delete=models.CASCADE,null=True, blank=True)
 
 class Program(models.Model):
 
@@ -197,7 +197,7 @@ class Program(models.Model):
                     ('45','Victims Assistance Program'),
                     )
     text = models.CharField(max_length = 255, choices = PROGRAM_CODE,null=True, blank=True)
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='program',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='program',on_delete=models.CASCADE,null=True, blank=True)
 
 #TODO: > characteristics and communication left-->
 
@@ -209,7 +209,7 @@ class ReferralMethod(models.Model):
                      ('mail','Mail'),
                     ) 
     text = models.CharField(max_length = 255, choices = REFERRAL_CODE,null=True, blank=True)
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='referralMethod',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='referralMethod',on_delete=models.CASCADE,null=True, blank=True)
 
 class availableTime(models.Model):
     DAYS_CODE = (('mon','Monday'),
@@ -223,10 +223,10 @@ class availableTime(models.Model):
     allDay = models.BooleanField(null=True, blank=True)
     availableStartTime =  models.TimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
     availabelEndTime =  models.TimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='availableTime',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='availableTime',on_delete=models.CASCADE,null=True, blank=True)
 
 class notAvailableTime(models.Model):
     description= models.CharField(max_length = 255,null=True, blank=True)
     # during = Period
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='notAvailable',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='notAvailable',on_delete=models.CASCADE,null=True, blank=True)
 

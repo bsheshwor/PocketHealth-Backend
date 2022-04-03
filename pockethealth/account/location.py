@@ -21,14 +21,14 @@ class Location(models.Model):
     #partOf = Refernce(Location)
     # hourseOfOperation 
     availabilityExceptions = models.CharField(max_length=15,null=True, blank=True) 
-    healthcareservice = models.ForeignKey(HealthcareService,related_name='location',on_delete=models.CASCADE)
+    healthcareservice = models.ForeignKey(HealthcareService,related_name='location',on_delete=models.CASCADE,null=True, blank=True)
 
 class Status(models.Model):
     STATUS_CODE = (('active','Active'),
                    ('suspended','Suspended'),
                    ('inactive','Inactive'),)
     text = models.CharField(max_length=255, choices = STATUS_CODE,null=True, blank=True)
-    location = models.ForeignKey(Location,related_name='status',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='status',on_delete=models.CASCADE,null=True, blank=True)
 
 class OperationalStatus(models.Model):
     OPERATIONAL_STATUS_CODE = (('C','Closed'),
@@ -38,7 +38,7 @@ class OperationalStatus(models.Model):
                                ('O','Occupied'),
                                ('U','Unoccupied'),)
     text = models.CharField(max_length=255, choices = OPERATIONAL_STATUS_CODE,null=True, blank=True)
-    location = models.ForeignKey(Location,related_name='operationalStatus',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='operationalStatus',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Mode(models.Model):
@@ -46,7 +46,7 @@ class Mode(models.Model):
                  ('kind','Kind'),
                  )
     text = models.CharField(max_length=255, choices = MODE_CODE,null=True, blank=True)
-    location = models.ForeignKey(Location,related_name='mode',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='mode',on_delete=models.CASCADE,null=True, blank=True)
 
 class Types(models.Model):
     TYPE_CODE = (('DX','Diagnostics or therapeutics unit'),
@@ -79,7 +79,7 @@ class Types(models.Model):
                  ('EPIL','Epilepsy unit'),
                  )
     text = models.CharField(max_length=255, choices = TYPE_CODE,null=True, blank=True)
-    location = models.ForeignKey(Location,related_name='types',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='types',on_delete=models.CASCADE,null=True, blank=True)
 
 class PhysicalLocationType(models.Model):
     PHYSICAL_CODE = (('si','Site'),
@@ -97,7 +97,7 @@ class PhysicalLocationType(models.Model):
                      ('area','Area'),
                      ('jdn','Jurisdiction'),)
     text = models.CharField(max_length=255, choices = PHYSICAL_CODE,null=True, blank=True)
-    location = models.ForeignKey(Location,related_name='physicalType',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='physicalType',on_delete=models.CASCADE,null=True, blank=True)
 
 class Position(models.Model):
     #WANT THIS TO BE STORED AUTOMATICALLY
@@ -108,7 +108,7 @@ class Position(models.Model):
                                     decimal_places = 5,null=True, blank=True)
     altitude = models.DecimalField(max_digits = 255,
                                     decimal_places = 5,null=True, blank=True)
-    location = models.ForeignKey(Location,related_name='position',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='position',on_delete=models.CASCADE,null=True, blank=True)
 
 class HoursOfOperation(models.Model):
     DAYS_CODE = (('mon','Monday'),
@@ -122,4 +122,4 @@ class HoursOfOperation(models.Model):
     allDay = models.BooleanField(null=True, blank=True)
     openingTime = models.TimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
     closingTime = models.TimeField(auto_now=False, auto_now_add=False,null=True, blank=True)
-    location = models.ForeignKey(Location,related_name='hoursOfOperation',on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,related_name='hoursOfOperation',on_delete=models.CASCADE,null=True, blank=True)

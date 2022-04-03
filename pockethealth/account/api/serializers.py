@@ -116,12 +116,32 @@ class PeriodSerializer(serializers.ModelSerializer):
 
 class ContactPointSerializer(serializers.ModelSerializer):
     
-    period = serializers.StringRelatedField(read_only=True)
+    # period = serializers.StringRelatedField(read_only=True)
+    period = PeriodSerializer(many=True, required=False)
 
     class Meta:
         model = ContactPoint
         fields = ('system','value','use','rank','period')
+    
+    def create(self, validated_data):
+        periods = validated_data.pop("period")
+        contactpoint_instance = ContactPoint.objects.create(**validated_data)
+        if periods:
+            for per in periods:
+                Period.objects.create(contactpoint=contactpoint_instance,**per)
+        return contactpoint_instance
+    
+    def update(self, instance, validated_data):
+        if validated_data.get('period'):
+            period_data = validated_data.get('period')
+            period_serializer = PeriodSerializer(data=period_data)
 
+            if period_serializer.is_valid():
+                period = period_serializer.update(instance=instance.period,
+                                                    validated_data=period_serializer.validated_data)
+                validated_data['period'] = period
+
+        return super().update(instance, validated_data)
 
 class DeceasedSerializer(serializers.ModelSerializer):
     
@@ -132,16 +152,27 @@ class DeceasedSerializer(serializers.ModelSerializer):
 
 class AddressSerializer(serializers.ModelSerializer):
 
-    period = serializers.StringRelatedField(read_only=True)
+    # period = serializers.StringRelatedField(read_only=True)
+    period = PeriodSerializer(many=True, read_only=True)
 
     class Meta:
         model = Address
         fields = ('use','address_type','text','line','city','district','state','postalCode','country','period')
 
 
-class HumanNameSerializer(serializers.ModelSerializer):
+class TelecomSerializer(serializers.ModelSerializer):
+    period = PeriodSerializer(many=True, read_only=True)
 
-    period = serializers.StringRelatedField(read_only=True)
+    class Meta:
+        model = Telecom
+        fields = ('system','value','use','rank','period')
+        depth = 2 
+
+
+class HumanNameSerializer(serializers.ModelSerializer):
+    period = PeriodSerializer(many=True, read_only=True)
+
+    # period = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = HumanName
@@ -155,11 +186,17 @@ class MaritalStatusSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+
 class ContactSerializer(serializers.ModelSerializer):
-    name = serializers.StringRelatedField(read_only=True)
-    telecom = serializers.StringRelatedField(read_only=True)
-    address = serializers.StringRelatedField(read_only=True)
-    period = serializers.StringRelatedField(read_only=True)
+    # name = serializers.StringRelatedField(read_only=True)
+    # telecom = serializers.StringRelatedField(read_only=True)
+    # address = serializers.StringRelatedField(read_only=True)
+    # period = serializers.StringRelatedField(read_only=True)
+    name = HumanNameSerializer(many=True, read_only=True)
+    telecom = TelecomSerializer(many=True, read_only=True)
+    address = AddressSerializer(many=True, read_only=True)
+    period = PeriodSerializer(many=True, read_only=True)
+
 
     class Meta:
         model = Contact
@@ -172,54 +209,38 @@ class CommunicationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TelecomSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Telecom
-        fields = ('system','value','use','rank','period')
-
 class LinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Link
         fields = "__all__"
 
-class OrganizationSerializer(serializers.ModelSerializer):
-    telecom = serializers.StringRelatedField(read_only=True)
-    address = serializers.StringRelatedField(read_only=True)
-    contact = serializers.StringRelatedField(read_only=True)
- 
-    class Meta:
-        model = Organization
-        fields = ("active","types","name","alias", "telecom","address","contact")
-
-
 class OrganizationContactSerializer(serializers.ModelSerializer):
-    name = serializers.StringRelatedField(read_only=True)
-    telecom = serializers.StringRelatedField(read_only=True)
-    address = serializers.StringRelatedField(read_only=True)
+    # name = serializers.StringRelatedField(read_only=True)
+    # telecom = serializers.StringRelatedField(read_only=True)
+    # address = serializers.StringRelatedField(read_only=True)
+    telecom = TelecomSerializer(many=True, read_only=True)
+    address = AddressSerializer(many=True, read_only=True)
+ 
 
     class Meta:
         model = OrganizationContact
         fields = ("purpose","name","telecom","address")
 
-class HealthcareServiceSerializer(serializers.ModelSerializer):
-    providedBy = serializers.StringRelatedField(read_only=True)
-    category = serializers.StringRelatedField(read_only=True)
-    types = serializers.StringRelatedField(read_only=True)
-    speciality = serializers.StringRelatedField(read_only=True)
-    location = serializers.StringRelatedField(read_only=True)
-    telecom = serializers.StringRelatedField(read_only=True)
-    serviceProvisionCode = serializers.StringRelatedField(read_only=True)
-    program = serializers.StringRelatedField(read_only=True)
-    communication = serializers.StringRelatedField(read_only=True)
-    referralMethod = serializers.StringRelatedField(read_only=True)
-    availableTime = serializers.StringRelatedField(read_only=True)
-    notAvailable = serializers.StringRelatedField(read_only=True)
-    
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    # telecom = serializers.StringRelatedField(read_only=True)
+    # address = serializers.StringRelatedField(read_only=True)
+    # contact = serializers.StringRelatedField(read_only=True)
+    telecom = OrganizationContactSerializer(many=True, read_only=True)
+    address = AddressSerializer(many=True, read_only=True)
+    contact = ContactSerializer(many=True, read_only=True)
+ 
+
     class Meta:
-        model = HealthcareService
-        fields = ("active","providedBy","category","types","speciality","location","name","comment","serviceProvisionCode","program","communication","referralMethod","appointmentRequired","availableTime","notAvailable","availabilityExceptions",)
+        model = Organization
+        fields = ("active","types","name","alias", "telecom","address","contact")
+
 
 class HealthcareCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -271,17 +292,38 @@ class notAvailableTimeSerializer(serializers.ModelSerializer):
         fields = ("description","during")
 
 
-class CareTeamSerializer(serializers.ModelSerializer):
-    status = serializers.StringRelatedField(read_only=True)
-    period = serializers.StringRelatedField(read_only=True)
-    reasonCode = serializers.StringRelatedField(read_only=True)
-    managingOrganization = serializers.StringRelatedField(read_only=True)
-    telecom = serializers.StringRelatedField(read_only=True)
-    note = serializers.StringRelatedField(read_only=True)
-   
+
+class HealthcareServiceSerializer(serializers.ModelSerializer):
+    # providedBy = serializers.StringRelatedField(read_only=True)
+    # # category = serializers.StringRelatedField(read_only=True)
+    # # types = serializers.StringRelatedField(read_only=True)
+    # speciality = serializers.StringRelatedField(read_only=True)
+    # location = serializers.StringRelatedField(read_only=True)
+    # telecom = serializers.StringRelatedField(read_only=True)
+    # serviceProvisionCode = serializers.StringRelatedField(read_only=True)
+    # program = serializers.StringRelatedField(read_only=True)
+    # communication = serializers.StringRelatedField(read_only=True)
+    # referralMethod = serializers.StringRelatedField(read_only=True)
+    # availableTime = serializers.StringRelatedField(read_only=True)
+    # notAvailable = serializers.StringRelatedField(read_only=True)
+    
+    category = HealthcareCategorySerializer(many=True, read_only=True)
+    types = TypeSerializer(many=True, read_only=True)
+    speciality = SpecialitySerializer(many=True, read_only=True)
+#    - location = TypeSerializer(many=True, read_only=True)
+    telecom = TelecomSerializer(many=True, read_only=True)
+    serviceProvisionCode = ServiceProvisionCodeSerializer(many=True, read_only=True)
+    program = ProgramSerializer(many=True, read_only=True)
+    communication = CommunicationSerializer(many=True, read_only=True)
+    referralMethod = ReferralMethodSerializer(many=True, read_only=True)
+    availableTime = availableTimeSerializer(many=True, read_only=True)
+    notAvailable = notAvailableTimeSerializer(many=True, read_only=True)
+ 
+
     class Meta:
-        model = CareTeam
-        fields = ("status","name","period","reasonCode","managingOrganization","telecom","note",)
+        model = HealthcareService
+        fields = ("active","providedBy","category","types","speciality","location","name","comment","serviceProvisionCode","program","communication","referralMethod","appointmentRequired","availableTime","notAvailable","availabilityExceptions",)
+
     
 class StatusCodeSerializer(serializers.ModelSerializer):
     
@@ -320,24 +362,25 @@ class AuthorSerializer(serializers.ModelSerializer):
         model = Author
         fields = ("authorString",)
 
+class CareTeamSerializer(serializers.ModelSerializer):
+    # status = serializers.StringRelatedField(read_only=True)
+    # period = serializers.StringRelatedField(read_only=True)
+    # reasonCode = serializers.StringRelatedField(read_only=True)
+    # managingOrganization = serializers.StringRelatedField(read_only=True)
+    # telecom = serializers.StringRelatedField(read_only=True)
+    # note = serializers.StringRelatedField(read_only=True)
 
-class LocationSerializer(serializers.ModelSerializer):
-    status = serializers.StringRelatedField(read_only=True)
-    operationalStatus = serializers.StringRelatedField(read_only=True)
-    mode = serializers.StringRelatedField(read_only=True)
-    types = serializers.StringRelatedField(read_only=True)
-    telecom = serializers.StringRelatedField(read_only=True)
-    address = serializers.StringRelatedField(read_only=True)
-    physicalType = serializers.StringRelatedField(read_only=True)
-    position = serializers.StringRelatedField(read_only=True)
-    managinOrganization = serializers.StringRelatedField(read_only=True)
-    hourseOfOperation = serializers.StringRelatedField(read_only=True)
-    telecom = serializers.StringRelatedField(read_only=True)
-    address = serializers.StringRelatedField(read_only=True)
-   
+    status = StatusCodeSerializer(many=True, read_only=True)
+    period = CommunicationSerializer(many=True, read_only=True)
+    reasonCode = ReasonCodeSerializer(many=True, read_only=True)
+    managingOrganization = OrganizationSerializer(many=True, read_only=True)
+    telecom = TelecomSerializer(many=True, read_only=True)
+    note = AnnotationSerializer(many=True, read_only=True)
+
     class Meta:
-        model = Location
-        fields = ("status","operationalStatus","name","alias","description","mode","types","telecom","address","physicalType","position","managingOrganization","hoursOfOperation","availabilityExceptions")
+        model = CareTeam
+        fields = ("status","name","period","reasonCode","managingOrganization","telecom","note",)
+
 
 class StatusSerializer(serializers.ModelSerializer):
     
@@ -380,3 +423,34 @@ class HoursOfOperationSerializer(serializers.ModelSerializer):
     class Meta:
         model = HoursOfOperation
         fields = ("daysOfWeek","allDay","openingTime","closingTime")
+
+
+class LocationSerializer(serializers.ModelSerializer):
+    # status = serializers.StringRelatedField(read_only=True)
+    # operationalStatus = serializers.StringRelatedField(read_only=True)
+    # mode = serializers.StringRelatedField(read_only=True)
+    # types = serializers.StringRelatedField(read_only=True)
+    # telecom = serializers.StringRelatedField(read_only=True)
+    # address = serializers.StringRelatedField(read_only=True)
+    # physicalType = serializers.StringRelatedField(read_only=True)
+    # position = serializers.StringRelatedField(read_only=True)
+    # managinOrganization = serializers.StringRelatedField(read_only=True)
+    # hourseOfOperation = serializers.StringRelatedField(read_only=True)
+    # telecom = serializers.StringRelatedField(read_only=True)
+    # address = serializers.StringRelatedField(read_only=True)
+   
+    status = StatusCodeSerializer(many=True, read_only=True)
+    operationalStatus = OperationalStatusSerializer(many=True, read_only=True)
+    mode = ModeSerializer(many=True, read_only=True)
+    types = TypesSerializer(many=True, read_only=True)
+    telecom = TelecomSerializer(many=True, read_only=True)
+    address = AddressSerializer(many=True, read_only=True)
+    physicalType = PhysicalLocationTypeSerializer(many=True, read_only=True)
+    position = PositionSerializer(many=True, read_only=True)
+    managinOrganization = OrganizationSerializer(many=True, read_only=True)
+    hourseOfOperation = HoursOfOperationSerializer(many=True, read_only=True)
+
+
+    class Meta:
+        model = Location
+        fields = ("status","operationalStatus","name","alias","description","mode","types","telecom","address","physicalType","position","managingOrganization","hoursOfOperation","availabilityExceptions")

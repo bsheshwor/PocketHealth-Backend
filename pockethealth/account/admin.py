@@ -8,12 +8,21 @@ from account.healthcareService import HealthcareService, HealthcareCategory, Typ
 from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation, Author
 from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
 
+class PeriodInline(admin.TabularInline):
+    model = Period
+
+
 
 admin.site.register(User)
 admin.site.register(Patient)
 admin.site.register(Practitioner)
 admin.site.register(Period)
-admin.site.register(ContactPoint)
+
+
+@admin.register(ContactPoint)
+class ContactPointAdmin(admin.ModelAdmin):
+    inlines = [PeriodInline,]
+
 admin.site.register(Deceased)
 admin.site.register(Address)
 admin.site.register(HumanName)
