@@ -82,7 +82,7 @@ class HealthcareCategory(models.Model):
                     ("32","Support Group/s"),
                     ("37","Test Message (HSD admin)"),
                     ("33","Transport"),
-                   )
+                    )
     text = models.CharField(max_length = 255, choices = CATEGORY_TYPE,null=True, blank=True)
     healthcareservice = models.ForeignKey(HealthcareService,related_name='category',on_delete=models.CASCADE)
 
