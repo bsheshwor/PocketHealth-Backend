@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import authenticate
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from account.models import User, Patient, Practitioner
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
@@ -114,7 +115,7 @@ class PeriodSerializer(serializers.ModelSerializer):
         model = Period
         fields = ('start','end')
 
-class ContactPointSerializer(serializers.ModelSerializer):
+class ContactPointSerializer(WritableNestedModelSerializer):
     
     # period = serializers.StringRelatedField(read_only=True)
     period = PeriodSerializer(many=True, required=False)
@@ -123,25 +124,25 @@ class ContactPointSerializer(serializers.ModelSerializer):
         model = ContactPoint
         fields = ('system','value','use','rank','period')
     
-    def create(self, validated_data):
-        periods = validated_data.pop("period")
-        contactpoint_instance = ContactPoint.objects.create(**validated_data)
-        if periods:
-            for per in periods:
-                Period.objects.create(contactpoint=contactpoint_instance,**per)
-        return contactpoint_instance
-    
-    def update(self, instance, validated_data):
-        if validated_data.get('period'):
-            period_data = validated_data.get('period')
-            period_serializer = PeriodSerializer(data=period_data)
+    # def create(self, validated_data):
+    #     periods = validated_data.pop("period")
+    #     contactpoint_instance = ContactPoint.objects.create(**validated_data)
+    #     if periods:
+    #         for per in periods:
+    #             Period.objects.create(contactpoint=contactpoint_instance,**per)
+    #     return contactpoint_instance
 
-            if period_serializer.is_valid():
-                period = period_serializer.update(instance=instance.period,
-                                                    validated_data=period_serializer.validated_data)
-                validated_data['period'] = period
+    # def update(self, instance, validated_data):
+    #     if validated_data.get('period'):
+    #         period_data = validated_data.get('period')
+    #         period_serializer = PeriodSerializer(data=period_data)
 
-        return super().update(instance, validated_data)
+    #         if period_serializer.is_valid():
+    #             period = period_serializer.update(instance=instance.period,
+    #                                                 validated_data=period_serializer.validated_data)
+    #             validated_data['period'] = period
+
+    #     return super().update(instance, validated_data)
 
 class DeceasedSerializer(serializers.ModelSerializer):
     
@@ -150,7 +151,7 @@ class DeceasedSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class AddressSerializer(serializers.ModelSerializer):
+class AddressSerializer(WritableNestedModelSerializer):
 
     # period = serializers.StringRelatedField(read_only=True)
     period = PeriodSerializer(many=True, read_only=True)
@@ -160,16 +161,15 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ('use','address_type','text','line','city','district','state','postalCode','country','period')
 
 
-class TelecomSerializer(serializers.ModelSerializer):
+class TelecomSerializer(WritableNestedModelSerializer):
     period = PeriodSerializer(many=True, read_only=True)
 
     class Meta:
         model = Telecom
         fields = ('system','value','use','rank','period')
-        depth = 2 
 
 
-class HumanNameSerializer(serializers.ModelSerializer):
+class HumanNameSerializer(WritableNestedModelSerializer):
     period = PeriodSerializer(many=True, read_only=True)
 
     # period = serializers.StringRelatedField(read_only=True)
@@ -187,7 +187,7 @@ class MaritalStatusSerializer(serializers.ModelSerializer):
 
 
 
-class ContactSerializer(serializers.ModelSerializer):
+class ContactSerializer(WritableNestedModelSerializer):
     # name = serializers.StringRelatedField(read_only=True)
     # telecom = serializers.StringRelatedField(read_only=True)
     # address = serializers.StringRelatedField(read_only=True)
@@ -215,7 +215,7 @@ class LinkSerializer(serializers.ModelSerializer):
         model = Link
         fields = "__all__"
 
-class OrganizationContactSerializer(serializers.ModelSerializer):
+class OrganizationContactSerializer(WritableNestedModelSerializer):
     # name = serializers.StringRelatedField(read_only=True)
     # telecom = serializers.StringRelatedField(read_only=True)
     # address = serializers.StringRelatedField(read_only=True)
@@ -228,7 +228,7 @@ class OrganizationContactSerializer(serializers.ModelSerializer):
         fields = ("purpose","name","telecom","address")
 
 
-class OrganizationSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(WritableNestedModelSerializer):
     # telecom = serializers.StringRelatedField(read_only=True)
     # address = serializers.StringRelatedField(read_only=True)
     # contact = serializers.StringRelatedField(read_only=True)
@@ -284,7 +284,7 @@ class availableTimeSerializer(serializers.ModelSerializer):
         model = availableTime
         fields = ("daysOfWeek","allDay","availableStartTime","availabelEndTime",)
     
-class notAvailableTimeSerializer(serializers.ModelSerializer):
+class notAvailableTimeSerializer(WritableNestedModelSerializer):
     during = serializers.StringRelatedField(read_only=True)
 
     class Meta:
@@ -293,7 +293,7 @@ class notAvailableTimeSerializer(serializers.ModelSerializer):
 
 
 
-class HealthcareServiceSerializer(serializers.ModelSerializer):
+class HealthcareServiceSerializer(WritableNestedModelSerializer):
     # providedBy = serializers.StringRelatedField(read_only=True)
     # # category = serializers.StringRelatedField(read_only=True)
     # # types = serializers.StringRelatedField(read_only=True)
@@ -331,6 +331,7 @@ class StatusCodeSerializer(serializers.ModelSerializer):
         model = StatusCode
         fields = ("text",)
 
+
 class ParticipantRoleSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -343,9 +344,20 @@ class ParticipantRoleSerializer(serializers.ModelSerializer):
 #         model = Participant
 #         fields = ("text")
 
+class ParticipantSerializer(WritableNestedModelSerializer):
+    
+    role = ParticipantRoleSerializer(many=True, read_only=True)
+    onBehalfOf = OrganizationSerializer(many=True, read_only=True)
+    period = PeriodSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Participant
+        fields = ("role","onBehalfOf","period")
+
 
 class ReasonCodeSerializer(serializers.ModelSerializer):
     
+
     class Meta:
         model = ReasonCode
         fields = ("text")
@@ -362,7 +374,7 @@ class AuthorSerializer(serializers.ModelSerializer):
         model = Author
         fields = ("authorString",)
 
-class CareTeamSerializer(serializers.ModelSerializer):
+class CareTeamSerializer(WritableNestedModelSerializer):
     # status = serializers.StringRelatedField(read_only=True)
     # period = serializers.StringRelatedField(read_only=True)
     # reasonCode = serializers.StringRelatedField(read_only=True)
@@ -371,8 +383,8 @@ class CareTeamSerializer(serializers.ModelSerializer):
     # note = serializers.StringRelatedField(read_only=True)
 
     status = StatusCodeSerializer(many=True, read_only=True)
-    period = CommunicationSerializer(many=True, read_only=True)
-    reasonCode = ReasonCodeSerializer(many=True, read_only=True)
+    period = PeriodSerializer(many=True, read_only=True)
+    participant = ParticipantSerializer(many=True, read_only=True)
     managingOrganization = OrganizationSerializer(many=True, read_only=True)
     telecom = TelecomSerializer(many=True, read_only=True)
     note = AnnotationSerializer(many=True, read_only=True)
@@ -425,7 +437,7 @@ class HoursOfOperationSerializer(serializers.ModelSerializer):
         fields = ("daysOfWeek","allDay","openingTime","closingTime")
 
 
-class LocationSerializer(serializers.ModelSerializer):
+class LocationSerializer(WritableNestedModelSerializer):
     # status = serializers.StringRelatedField(read_only=True)
     # operationalStatus = serializers.StringRelatedField(read_only=True)
     # mode = serializers.StringRelatedField(read_only=True)

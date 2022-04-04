@@ -2,8 +2,7 @@ from django.urls import path
 from django.urls.resolvers import URLPattern
 
 from .views import PatientRegistration, PractitionerRegistration, UserLogin,PeriodViewSet,ContactPointViewSet,DeceasedViewSet,AddressViewSet,HumanNameViewSet,MaritalStatusViewSet,ContactViewSet,CommunicationViewSet,TelecomViewSet,LinkViewSet
-from .views import OrganizationViewSet,OrganizationContactViewSet,HealthcareServiceViewSet,HealthcareCategoryViewSet,TypeViewSet,SpecialityViewSet,ServiceProvisionCodeViewSet,ProgramViewSet,ReferralMethodViewSet,availableTimeViewSet,notAvailableTimeViewSet,CareTeamViewSet,StatusCodeViewSet,ParticipantRoleViewSet,ReasonCodeViewSet,AnnotationViewSet,AuthorViewSet,LocationViewSet,StatusViewSet,OperationalStatusViewSet,ModeViewSet,TypesViewSet,PhysicalLocationTypeViewSet,PositionViewSet,HoursOfOperationViewSet
-
+from .views import OrganizationViewSet,OrganizationContactViewSet,HealthcareServiceViewSet,HealthcareCategoryViewSet,TypeViewSet,SpecialityViewSet,ServiceProvisionCodeViewSet,ProgramViewSet,ReferralMethodViewSet,availableTimeViewSet,notAvailableTimeViewSet,CareTeamViewSet,StatusCodeViewSet,ParticipantRoleViewSet, ParticipantViewSet,ReasonCodeViewSet,AnnotationViewSet,AuthorViewSet,LocationViewSet,StatusViewSet,OperationalStatusViewSet,ModeViewSet,TypesViewSet,PhysicalLocationTypeViewSet,PositionViewSet,HoursOfOperationViewSet
 app_name = 'account'
 
 urlpatterns = [
@@ -178,6 +177,13 @@ urlpatterns = [
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
                                         }), name='careteam-participantrole-detail'), 
+    path('careteam/participant/', ParticipantViewSet.as_view({'get': 'list', 'post':'create'}), name='careteam-participant'),
+    path('careteam/participant/<int:pk>', ParticipantViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='careteam-participant-detail'), 
     path('careteam/reasoncode/', ReasonCodeViewSet.as_view({'get': 'list', 'post':'create'}), name='careteam-reasoncode'),
     path('careteam/reasoncode/<int:pk>', ReasonCodeViewSet.as_view({
                                             'get': 'retrieve',

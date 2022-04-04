@@ -117,7 +117,7 @@ class ReasonCode(models.Model):
                     ('9999999999','Others'),
                     )
     text = models.CharField(max_length=255, choices = REASON_CODE,null=True, blank=True)
-    participant = models.ForeignKey(Participant,related_name='reasonCode',on_delete=models.CASCADE,null=True, blank=True)
+    careteam = models.ForeignKey(CareTeam,related_name='reasonCode',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Annotation(models.Model):

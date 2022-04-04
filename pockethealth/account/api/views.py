@@ -18,7 +18,7 @@ from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant,
 from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
 
 from account.api.serializers import PatientRegistrationSerializer, PractitionerRegistrationSerializer, UserLoginSerializer,PeriodSerializer,ContactPointSerializer,DeceasedSerializer,AddressSerializer,HumanNameSerializer,MaritalStatusSerializer,ContactSerializer,CommunicationSerializer,LinkSerializer,TelecomSerializer
-from account.api.serializers import OrganizationSerializer,OrganizationContactSerializer,HealthcareServiceSerializer,HealthcareCategorySerializer,TypeSerializer,SpecialitySerializer,ServiceProvisionCodeSerializer,ProgramSerializer,ReferralMethodSerializer,availableTimeSerializer,notAvailableTimeSerializer,CareTeamSerializer,StatusCodeSerializer,ParticipantRoleSerializer,ReasonCodeSerializer,AnnotationSerializer,AuthorSerializer,LocationSerializer,StatusSerializer,OperationalStatusSerializer,ModeSerializer,TypesSerializer,PhysicalLocationTypeSerializer,PositionSerializer,HoursOfOperationSerializer
+from account.api.serializers import OrganizationSerializer,OrganizationContactSerializer,HealthcareServiceSerializer,HealthcareCategorySerializer,TypeSerializer,SpecialitySerializer,ServiceProvisionCodeSerializer,ProgramSerializer,ReferralMethodSerializer,availableTimeSerializer,notAvailableTimeSerializer,CareTeamSerializer,StatusCodeSerializer,ParticipantRoleSerializer,ParticipantSerializer,ReasonCodeSerializer,AnnotationSerializer,AuthorSerializer,LocationSerializer,StatusSerializer,OperationalStatusSerializer,ModeSerializer,TypesSerializer,PhysicalLocationTypeSerializer,PositionSerializer,HoursOfOperationSerializer
 
 
 class PatientRegistration(APIView):
@@ -42,6 +42,7 @@ class PractitionerRegistration(APIView):
         serializer.is_valid(raise_exception =True)
         serializer.save()
         return Response(serializer.data, status = status.HTTP_201_CREATED)
+
 
 class UserLogin(APIView):
     permission_classes = (AllowAny, )
@@ -149,6 +150,10 @@ class StatusCodeViewSet(viewsets.ModelViewSet):
 class ParticipantRoleViewSet(viewsets.ModelViewSet):
     queryset = ParticipantRole.objects.all()
     serializer_class = ParticipantRoleSerializer
+
+class ParticipantViewSet(viewsets.ModelViewSet):
+    queryset = Participant.objects.all()
+    serializer_class = ParticipantSerializer
 
 class ReasonCodeViewSet(viewsets.ModelViewSet):
     queryset = ReasonCode.objects.all()

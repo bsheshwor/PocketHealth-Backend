@@ -62,7 +62,7 @@ class Contact(models.Model):
     # telecom = models.ForeignKey(ContactPoint,on_delete=models.CASCADE)
     # address = models.ForeignKey(Address,on_delete=models.CASCADE)
     gender = models.CharField(max_length=225, choices = GENDER_CODE,null=True, blank=True)
-    organization = models.ForeignKey("account.Organization", related_name='organization', on_delete=models.CASCADE)
+    organization = models.ForeignKey("account.Organization", related_name='organization', on_delete=models.CASCADE,null=True, blank=True)
     patient = models.ForeignKey("account.Patient", related_name='contact', on_delete=models.CASCADE,null=True, blank=True)
     #TODO: organization(Reference(Organization))
     # period = models.ForeignKey(Period, on_delete=models.CASCADE)
@@ -146,7 +146,7 @@ class HumanName(models.Model):
     patient = models.ForeignKey("account.Patient", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
     practitioner = models.ForeignKey("account.Practitioner", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
 
-    def save(self, args, **kwargs):
+    def save(self, *args, **kwargs):
         self.text = self.given +" "+self.family
         super(HumanName, self).save(*args, **kwargs)
 
@@ -466,4 +466,5 @@ class Period(models.Model):
     notavailabletime = models.ForeignKey("account.notAvailableTime",related_name='during',on_delete=models.CASCADE,null=True, blank=True)
     participant = models.ForeignKey("account.Participant",related_name='period',on_delete=models.CASCADE,null=True, blank=True)
     qualification = models.ForeignKey(Qualification,related_name='period',on_delete=models.CASCADE,null=True, blank=True)
+    careteam = models.ForeignKey("account.CareTeam",related_name='period',on_delete=models.CASCADE,null=True, blank=True)
 
