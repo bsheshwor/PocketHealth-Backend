@@ -144,7 +144,7 @@ class HumanName(models.Model):
     oganizationcontact = models.ForeignKey("account.OrganizationContact",related_name='name',on_delete=models.CASCADE,null=True, blank=True)
     relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_name', on_delete=models.CASCADE,null=True, blank=True)
     patientregistermodel = models.ForeignKey("account.PatientRegisterModel", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
-    # practitioner = models.ForeignKey("account.Practitioner", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
+    practitionerregistermodel = models.ForeignKey("account.PractitionerRegisterModel", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
     telecom = models.ForeignKey("account.Telecom", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -156,7 +156,7 @@ class Telecom(models.Model):
     location = models.ForeignKey('account.Location',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
     careteam = models.ForeignKey('account.CareTeam',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
     patientregistermodel = models.ForeignKey('account.PatientRegisterModel',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
-    practitioner = models.ForeignKey('account.Practitioner',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    practitionerregistermodel = models.ForeignKey("account.PractitionerRegisterModel", related_name = 'telecom', on_delete=models.CASCADE,null=True, blank=True)
     organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
     organization = models.ForeignKey("account.Organization",related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
     healthcareservice = models.ForeignKey("account.HealthCareService",related_name='telecom',on_delete=models.CASCADE, null=True, blank=True)
@@ -253,7 +253,7 @@ class Address(models.Model):
     location = models.ForeignKey("account.Location",related_name='address',on_delete=models.CASCADE,null=True, blank=True)
     relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_address', on_delete=models.CASCADE,null=True, blank=True)
     patientregistermodel = models.ForeignKey("account.PatientRegisterModel", related_name = 'address', on_delete=models.CASCADE,null=True, blank=True)
-    practitioner = models.ForeignKey('account.Practitioner',related_name='address',on_delete=models.CASCADE,null=True, blank=True)
+    practitionerregistermodel = models.ForeignKey("account.PractitionerRegisterModel", related_name = 'address', on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Communication(models.Model):
@@ -325,7 +325,7 @@ class Communication(models.Model):
     preferred = models.BooleanField()
     healthcareservice = models.ForeignKey("account.HealthCareService",related_name='communication',on_delete=models.CASCADE,null=True, blank=True)
     patientregistermodel = models.ForeignKey("account.PatientRegisterModel", related_name = 'communication', on_delete=models.CASCADE,null=True, blank=True)
-    practitioner = models.ForeignKey('account.Practitioner',related_name='communication',on_delete=models.CASCADE,null=True, blank=True)
+    practitionerregistermodel = models.ForeignKey("account.PractitionerRegisterModel",related_name='communication',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Link(models.Model):
@@ -402,8 +402,8 @@ class Qualification(models.Model):
     # code
     # period
     # issuer
-    practitioner = models.ForeignKey("account.Practitioner",related_name='qualification',on_delete=models.CASCADE,null=True, blank=True)
-    pass
+    practitionerregistermodel = models.ForeignKey("account.PractitionerRegisterModel",related_name='qualification',on_delete=models.CASCADE,null=True, blank=True)
+
 
 
 class QualificationCodeableConcept(models.Model):

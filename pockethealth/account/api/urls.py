@@ -1,7 +1,7 @@
 from django.urls import path
 from django.urls.resolvers import URLPattern
 
-from .views import PatientRegistration, PractitionerRegistration, PatientRegisterModelViewSet,UserLogin,PeriodViewSet,ContactPointViewSet,DeceasedViewSet,AddressViewSet,HumanNameViewSet,MaritalStatusViewSet,ContactViewSet,CommunicationViewSet,TelecomViewSet,LinkViewSet
+from .views import PatientRegistration, PractitionerRegistration, PatientRegisterModelViewSet,PractitionerRegisterModelViewSet,UserLogin,PeriodViewSet,ContactPointViewSet,DeceasedViewSet,AddressViewSet,HumanNameViewSet,MaritalStatusViewSet,ContactViewSet,CommunicationViewSet,TelecomViewSet,LinkViewSet
 from .views import OrganizationViewSet,OrganizationContactViewSet,HealthcareServiceViewSet,HealthcareCategoryViewSet,TypeViewSet,SpecialityViewSet,ServiceProvisionCodeViewSet,ProgramViewSet,ReferralMethodViewSet,availableTimeViewSet,notAvailableTimeViewSet,CareTeamViewSet,StatusCodeViewSet,ParticipantRoleViewSet, ParticipantViewSet,ReasonCodeViewSet,AnnotationViewSet,NoteViewSet,AuthorViewSet,LocationViewSet,StatusViewSet,OperationalStatusViewSet,ModeViewSet,TypesViewSet,PhysicalLocationTypeViewSet,PositionViewSet,HoursOfOperationViewSet
 app_name = 'account'
 
@@ -16,6 +16,13 @@ urlpatterns = [
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
                                         }), name='patient_register_model_detail'),
+    path('practitioner/register_model/', PractitionerRegisterModelViewSet.as_view({'get': 'list', 'post':'create'}), name="practitioner_register_model"),
+    path('practitioner/register_model/<int:pk>', PractitionerRegisterModelViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='practitioner_register_model_detail'),
     path('period/', PeriodViewSet.as_view({'get': 'list', 'post':'create'}), name="create_period"),
     path('period/<int:pk>', PeriodViewSet.as_view({
                                             'get': 'retrieve',

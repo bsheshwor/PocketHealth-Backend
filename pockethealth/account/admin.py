@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from account.models import User, Patient, Practitioner, PatientRegisterModel
+from account.models import User, Patient, Practitioner, PatientRegisterModel,PractitionerRegisterModel
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link,Telecom,RelatedPerson,Qualification, QualificationCodeableConcept
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
@@ -10,6 +10,9 @@ from account.location import  Location, Status, OperationalStatus, Mode, Types, 
 
 class PatientRegisterModelInline(admin.TabularInline):
     model = PatientRegisterModel
+
+class PractitionerRegisterModelInline(admin.TabularInline):
+    model = PractitionerRegisterModel
 
 
 class PeriodInline(admin.TabularInline):
@@ -123,6 +126,11 @@ class HoursOfOperationInline(admin.TabularInline):
 class LocationInline(admin.TabularInline):
     model = Location
 
+class QualificationInline(admin.TabularInline):
+    model = Qualification
+
+class QualificationCodeableConceptInline(admin.TabularInline):
+    model = QualificationCodeableConcept
 
 admin.site.register(User)
 admin.site.register(Patient)
@@ -190,6 +198,15 @@ class PatientRegisterAdmin(admin.ModelAdmin):
     inlines = [HumanNameInline, TelecomInline, AddressInline, MaritalStatusInline, ContactInline, CommunicationInline, OrganizationInline, LinkInline]
 
 
+@admin.register(Qualification)
+class QualificationAdmin(admin.ModelAdmin):
+    inlines = [QualificationCodeableConceptInline,PeriodInline]
+
+
+@admin.register(PractitionerRegisterModel)
+class PractitionerRegisterAdmin(admin.ModelAdmin):
+    inlines = [HumanNameInline, TelecomInline, AddressInline,QualificationInline,CommunicationInline]
+
 admin.site.register(Deceased)
 # admin.site.register(Address)
 # admin.site.register(HumanName)
@@ -199,7 +216,7 @@ admin.site.register(Communication)
 # admin.site.register(Telecom)
 admin.site.register(Link)
 admin.site.register(RelatedPerson)
-admin.site.register(Qualification)
+# admin.site.register(Qualification)
 admin.site.register(QualificationCodeableConcept)
 
 

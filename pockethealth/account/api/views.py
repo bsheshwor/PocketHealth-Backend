@@ -10,14 +10,14 @@ from account.api.renderers import UserJSONRenderer
 
 from account import models
 from account.api import serializers, permissions
-from account.models import User, Patient, Practitioner,PatientRegisterModel
+from account.models import User, Patient, Practitioner,PatientRegisterModel,PractitionerRegisterModel
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
 from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation,Note, Author
 from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
 
-from account.api.serializers import PatientRegistrationSerializer, PractitionerRegistrationSerializer, UserLoginSerializer,PatientRegisterModelSerializer,PeriodSerializer,ContactPointSerializer,DeceasedSerializer,AddressSerializer,HumanNameSerializer,MaritalStatusSerializer,ContactSerializer,CommunicationSerializer,LinkSerializer,TelecomSerializer
+from account.api.serializers import PatientRegistrationSerializer, PractitionerRegistrationSerializer, UserLoginSerializer,PatientRegisterModelSerializer,PractitionerRegisterModelSerializer,PeriodSerializer,ContactPointSerializer,DeceasedSerializer,AddressSerializer,HumanNameSerializer,MaritalStatusSerializer,ContactSerializer,CommunicationSerializer,LinkSerializer,TelecomSerializer
 from account.api.serializers import OrganizationSerializer,OrganizationContactSerializer,HealthcareServiceSerializer,HealthcareCategorySerializer,TypeSerializer,SpecialitySerializer,ServiceProvisionCodeSerializer,ProgramSerializer,ReferralMethodSerializer,availableTimeSerializer,notAvailableTimeSerializer,CareTeamSerializer,StatusCodeSerializer,ParticipantRoleSerializer,ParticipantSerializer,ReasonCodeSerializer,AnnotationSerializer,NoteSerializer,AuthorSerializer,LocationSerializer,StatusSerializer,OperationalStatusSerializer,ModeSerializer,TypesSerializer,PhysicalLocationTypeSerializer,PositionSerializer,HoursOfOperationSerializer
 
 
@@ -207,3 +207,7 @@ class HoursOfOperationViewSet(viewsets.ModelViewSet):
 class PatientRegisterModelViewSet(viewsets.ModelViewSet):
     queryset = PatientRegisterModel.objects.all()
     serializer_class = PatientRegisterModelSerializer
+
+class PractitionerRegisterModelViewSet(viewsets.ModelViewSet):
+    queryset = PractitionerRegisterModel.objects.all()
+    serializer_class = PractitionerRegisterModelSerializer

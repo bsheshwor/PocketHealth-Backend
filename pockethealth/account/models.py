@@ -148,4 +148,21 @@ class Practitioner(User, PermissionsMixin):
         return self.email
 
 class PractitionerRegisterModel(models.Model):
+    GENDER_CODE = (
+        ("1","male"),
+        ("2","female"),
+        ("3","other"),
+        ("4","unknown")
+    )
     practitioner = models.OneToOneField(Practitioner,related_name = 'practitioner', on_delete=models.CASCADE,null=True, blank=True )
+    #identifier
+    active = models.BooleanField(null=True, blank=True)
+    # name
+    # telecom
+    # address
+    gender = models.CharField(max_length=225, choices = GENDER_CODE,null=True, blank=True)
+    birthDate = models.DateField(null=True, blank=True)
+    # photo
+    # qualification
+    # communication
+

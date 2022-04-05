@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from account.models import User, Patient, Practitioner, PatientRegisterModel, PractitionerRegisterModel
-from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
+from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link, Qualification,QualificationCodeableConcept
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
 from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation,Note, Author
@@ -189,6 +189,19 @@ class notAvailableTimeSerializer(WritableNestedModelSerializer):
         model = notAvailableTime
         fields = ("pk","description","during")
 
+class QualificationCodeableConceptSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = QualificationCodeableConcept
+        fields = ("pk","text",)
+
+class QualificationSerializer(serializers.ModelSerializer):
+    period = PeriodSerializer(many=True,required=False)
+    code = QualificationCodeableConceptSerializer(many=True,required=False)
+    
+    class Meta:
+        model = Qualification
+        fields = ("pk","code","text")
 
 
 class HealthcareServiceSerializer(WritableNestedModelSerializer):
@@ -449,6 +462,19 @@ class PatientRegisterModelSerializer(WritableNestedModelSerializer):
     class Meta:
         model = PatientRegisterModel
         fields = ("pk","active","name","telecom","gender","birthDate","address","maritalStatus","contact","communication","managingOrganization","link")
+
+
+class PractitionerRegisterModelSerializer(WritableNestedModelSerializer):
+    name = HumanNameSerializer(many=True,required=False)
+    telecom = TelecomSerializer(many=True, required=False)
+    address = AddressSerializer(many=True, required=False)
+    # photo
+    qualification = QualificationSerializer(many=True, required=False)
+    communication = CommunicationSerializer(many=True, required=False)
+    class Meta:
+        model = PractitionerRegisterModel
+        fields = ("pk","active","name","telecom","address","gender","birthDate","qualification","communication")
+
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length = 255)
