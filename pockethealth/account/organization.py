@@ -29,7 +29,7 @@ class Organization(models.Model):
     participant = models.ForeignKey(Participant,related_name='onBehalfOf',on_delete=models.CASCADE,null=True, blank=True)
     healthcareservice = models.ForeignKey(HealthcareService,related_name='providedBy',on_delete=models.CASCADE,null=True, blank=True)
     location = models.ForeignKey(Location,related_name='managingOrganization',on_delete=models.CASCADE,null=True, blank=True)
-    patient = models.ForeignKey("account.Patient",related_name='managingOrganization',on_delete=models.CASCADE,null=True, blank=True)
+    patientregistermodel = models.ForeignKey("account.PatientRegisterModel", related_name = 'managingOrganization', on_delete=models.CASCADE,null=True, blank=True)
     qualification = models.ForeignKey(Qualification,related_name='issuer',on_delete=models.CASCADE,null=True, blank=True)
 
     # telecom = models.CHar(contactpoint)

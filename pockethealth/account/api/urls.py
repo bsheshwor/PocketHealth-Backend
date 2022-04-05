@@ -1,7 +1,7 @@
 from django.urls import path
 from django.urls.resolvers import URLPattern
 
-from .views import PatientRegistration, PractitionerRegistration, UserLogin,PeriodViewSet,ContactPointViewSet,DeceasedViewSet,AddressViewSet,HumanNameViewSet,MaritalStatusViewSet,ContactViewSet,CommunicationViewSet,TelecomViewSet,LinkViewSet
+from .views import PatientRegistration, PractitionerRegistration, PatientRegisterModelViewSet,UserLogin,PeriodViewSet,ContactPointViewSet,DeceasedViewSet,AddressViewSet,HumanNameViewSet,MaritalStatusViewSet,ContactViewSet,CommunicationViewSet,TelecomViewSet,LinkViewSet
 from .views import OrganizationViewSet,OrganizationContactViewSet,HealthcareServiceViewSet,HealthcareCategoryViewSet,TypeViewSet,SpecialityViewSet,ServiceProvisionCodeViewSet,ProgramViewSet,ReferralMethodViewSet,availableTimeViewSet,notAvailableTimeViewSet,CareTeamViewSet,StatusCodeViewSet,ParticipantRoleViewSet, ParticipantViewSet,ReasonCodeViewSet,AnnotationViewSet,NoteViewSet,AuthorViewSet,LocationViewSet,StatusViewSet,OperationalStatusViewSet,ModeViewSet,TypesViewSet,PhysicalLocationTypeViewSet,PositionViewSet,HoursOfOperationViewSet
 app_name = 'account'
 
@@ -9,6 +9,13 @@ urlpatterns = [
     path('patient_register/', PatientRegistration.as_view(), name='patient_register'),
     path('practitioner_register/', PractitionerRegistration.as_view(), name='practitioner_register'),
     path('login/', UserLogin.as_view(), name='login'),
+    path('patient/register_model/', PeriodViewSet.as_view({'get': 'list', 'post':'create'}), name="patient_register_model"),
+    path('patient/register_model//<int:pk>', PeriodViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='patient_register_model_detail'),
     path('period/', PeriodViewSet.as_view({'get': 'list', 'post':'create'}), name="create_period"),
     path('period/<int:pk>', PeriodViewSet.as_view({
                                             'get': 'retrieve',
@@ -16,6 +23,7 @@ urlpatterns = [
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
                                         }), name='period'),
+    
     path('contact_point/', ContactPointViewSet.as_view({'get': 'list', 'post':'create'}), name='contact_point'),
     path('contact_point/<int:pk>', ContactPointViewSet.as_view({
                                             'get': 'retrieve',

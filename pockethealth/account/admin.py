@@ -1,12 +1,16 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from account.models import User, Patient, Practitioner
+from account.models import User, Patient, Practitioner, PatientRegisterModel
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link,Telecom,RelatedPerson,Qualification, QualificationCodeableConcept
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
 from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation, Note,Author
 from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
+
+class PatientRegisterModelInline(admin.TabularInline):
+    model = PatientRegisterModel
+
 
 class PeriodInline(admin.TabularInline):
     model = Period
@@ -23,7 +27,7 @@ class AddressInline(admin.TabularInline):
 class DeceasedInline(admin.TabularInline):
     model = Deceased
 
-class MartitalStatusInline(admin.TabularInline):
+class MaritalStatusInline(admin.TabularInline):
     model = MaritalStatus
 
 class ContactPointInline(admin.TabularInline):
@@ -181,6 +185,9 @@ class ParticipantAdmin(admin.ModelAdmin):
 class LocationAdmin(admin.ModelAdmin):
     inlines = [StatusInline, OperationalStatusInline, ModeInline, TypesInline, TelecomInline, AddressInline, PhysicalLocationTypeInline, PositionInline, OrganizationInline, HoursOfOperationInline]
 
+@admin.register(PatientRegisterModel)
+class PatientRegisterAdmin(admin.ModelAdmin):
+    inlines = [HumanNameInline, TelecomInline, AddressInline, MaritalStatusInline, ContactInline, CommunicationInline, OrganizationInline, LinkInline]
 
 
 

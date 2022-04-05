@@ -3,109 +3,12 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 
-from account.models import User, Patient, Practitioner
+from account.models import User, Patient, Practitioner, PatientRegisterModel, PractitionerRegisterModel
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
 from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation,Note, Author
 from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
-class PatientRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(
-        max_length = 150,
-        min_length = 8,
-        write_only = True
-    )
-
-    # password_confirm = serializers.CharField(
-    #     max_length = 150,
-    #     min_length = 8,
-    #     write_only = True
-    # )
-
-    period = serializers.StringRelatedField(read_only=True)
-    contact_point = serializers.StringRelatedField(read_only=True)
-    deceased = serializers.StringRelatedField(read_only=True)
-    address = serializers.StringRelatedField(read_only=True)
-    human_name = serializers.StringRelatedField(read_only=True)
-    marital_status = serializers.StringRelatedField(read_only=True)
-    contact = serializers.StringRelatedField(read_only=True)
-    communication = serializers.StringRelatedField(read_only=True)
-    link = serializers.StringRelatedField(read_only=True)
-
-    token = serializers.CharField(max_length = 255, read_only=True)
-    
-    class Meta:
-        model = Patient
-        fields = ('first_name','last_name', 'email', 'password','occupation',
-                  'period','contact_point','deceased','address','human_name',
-                  'marital_status','contact', 'communication','link','token')
-
-    def create(self, validated_data):
-        return Patient.objects.create_patient(**validated_data)
-
-class PractitionerRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(
-        max_length = 150,
-        min_length = 8,
-        write_only = True
-    )
-
-    # password_confirm = serializers.CharField(
-    #     max_length = 150,
-    #     min_length = 8,
-    #     write_only = True
-    # )
-
-    token = serializers.CharField(max_length = 255, read_only=True)
-
-    class Meta:
-        model = Practitioner
-        fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token')
-
-    def create(self, validated_data):
-        return Practitioner.objects.create_doctor(**validated_data)
-
-
-class UserLoginSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length = 255)
-    password = serializers.CharField(max_length=150, write_only=True)
-    token = serializers.CharField(max_length=255, read_only=True)
-
-    def validate(self,data):
-        email = data.get('email', None)
-        password = data.get('password', None)
-
-        user = authenticate(username=email, password=password)
-
-        if user is None:
-            raise serializers.ValidationError(
-                'A user with this email and password is not found.'
-            )
-        try:
-            userObj = Patient.objects.get(email=user.email)
-        except Patient.DoesNotExist:
-            userObj = None
-        
-        try:
-            if userObj is None:
-                userObj = Practitioner.objects.get(email=user.email)
-        except Practitioner.DoesNotExist:
-            raise serializers.ValidationError(
-                'User not given email and password does not exist'
-            )
-        
-        if not user.is_active:
-            raise serializers.ValidationError(
-                'This user has been deactivated.'
-            )
- 
-        # The `validate` method should return a dictionary of validated data.
-        # This is the data that is passed to the `create` and `update` methods
-    
-        return {
-            'email': user.email,
-            'token': user.token
-        }
 
 class PeriodSerializer(serializers.ModelSerializer):
     
@@ -472,3 +375,120 @@ class LocationSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Location
         fields = ("pk","status","operationalStatus","name","alias","description","mode","types","telecom","address","physicalType","position","managingOrganization","hoursOfOperation","availabilityExceptions")
+
+
+
+class PatientRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        max_length = 150,
+        min_length = 8,
+        write_only = True
+    )
+
+    # password_confirm = serializers.CharField(
+    #     max_length = 150,
+    #     min_length = 8,
+    #     write_only = True
+    # )
+
+    # period = serializers.StringRelatedField(read_only=True)
+    # contact_point = serializers.StringRelatedField(read_only=True)
+    # deceased = serializers.StringRelatedField(read_only=True)
+    # address = serializers.StringRelatedField(read_only=True)
+    # human_name = serializers.StringRelatedField(read_only=True)
+    # marital_status = serializers.StringRelatedField(read_only=True)
+    # contact = serializers.StringRelatedField(read_only=True)
+    # communication = serializers.StringRelatedField(read_only=True)
+    # link = serializers.StringRelatedField(read_only=True)
+
+    token = serializers.CharField(max_length = 255, read_only=True)
+    
+    class Meta:
+        model = Patient
+        # fields = ('first_name','last_name', 'email', 'password','occupation',
+        #           'period','contact_point','deceased','address','human_name',
+        #           'marital_status','contact', 'communication','link','token')
+        fields = ("pk","email","password","token")
+
+    def create(self, validated_data):
+        return Patient.objects.create_patient(**validated_data)
+
+class PractitionerRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        max_length = 150,
+        min_length = 8,
+        write_only = True
+    )
+
+    # password_confirm = serializers.CharField(
+    #     max_length = 150,
+    #     min_length = 8,
+    #     write_only = True
+    # )
+
+    token = serializers.CharField(max_length = 255, read_only=True)
+
+    class Meta:
+        model = Practitioner
+        # fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token')
+        fields = ("pk","email","password","token")
+
+    def create(self, validated_data):
+        return Practitioner.objects.create_doctor(**validated_data)
+
+class PatientRegisterModelSerializer(WritableNestedModelSerializer):
+    name = HumanNameSerializer(many=True, required=False)
+    telecom = TelecomSerializer(many=True, required=False)
+    address = AddressSerializer(many=True, required=False)
+    maritalStatus = MaritalStatusSerializer(many=True, required=False)
+    # photo
+    contact = ContactSerializer(many=True, required=False)
+    communication = CommunicationSerializer(many=True, required=False)
+    managingOrganization = OrganizationSerializer(many=True, required=False)
+    link = LinkSerializer(many=True, required=False)
+
+    class Meta:
+        model = Practitioner
+        fields = ("pk","active","name","telecom","gender","birthDate","address","maritalStatus","contact","communication","managingOrganization","link")
+
+
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length = 255)
+    password = serializers.CharField(max_length=150, write_only=True)
+    token = serializers.CharField(max_length=255, read_only=True)
+
+    def validate(self,data):
+        email = data.get('email', None)
+        password = data.get('password', None)
+
+        user = authenticate(username=email, password=password)
+
+        if user is None:
+            raise serializers.ValidationError(
+                'A user with this email and password is not found.'
+            )
+        try:
+            userObj = Patient.objects.get(email=user.email)
+        except Patient.DoesNotExist:
+            userObj = None
+        
+        try:
+            if userObj is None:
+                userObj = Practitioner.objects.get(email=user.email)
+        except Practitioner.DoesNotExist:
+            raise serializers.ValidationError(
+                'User not given email and password does not exist'
+            )
+        
+        if not user.is_active:
+            raise serializers.ValidationError(
+                'This user has been deactivated.'
+            )
+ 
+        # The `validate` method should return a dictionary of validated data.
+        # This is the data that is passed to the `create` and `update` methods
+    
+        return {
+            'email': user.email,
+            'token': user.token
+        }
