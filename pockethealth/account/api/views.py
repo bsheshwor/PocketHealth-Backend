@@ -80,7 +80,7 @@ class MaritalStatusViewSet(viewsets.ModelViewSet):
     serializer_class = MaritalStatusSerializer
 
 class ContactViewSet(viewsets.ModelViewSet):
-    queryset = ContactPoint.objects.all()
+    queryset = Contact.objects.all()
     serializer_class = ContactSerializer
 
 class CommunicationViewSet(viewsets.ModelViewSet):

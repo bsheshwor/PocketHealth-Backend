@@ -9,7 +9,6 @@ from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
 from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation, Author
 from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
-
 class PatientRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length = 150,
@@ -23,20 +22,24 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
     #     write_only = True
     # )
 
+    period = serializers.StringRelatedField(read_only=True)
+    contact_point = serializers.StringRelatedField(read_only=True)
     deceased = serializers.StringRelatedField(read_only=True)
     address = serializers.StringRelatedField(read_only=True)
-    maritalStatus = serializers.StringRelatedField(read_only=True)
+    human_name = serializers.StringRelatedField(read_only=True)
+    marital_status = serializers.StringRelatedField(read_only=True)
     contact = serializers.StringRelatedField(read_only=True)
     communication = serializers.StringRelatedField(read_only=True)
-    managingOrganization = serializers.StringRelatedField(read_only=True)
+    link = serializers.StringRelatedField(read_only=True)
 
     token = serializers.CharField(max_length = 255, read_only=True)
     
     class Meta:
         model = Patient
-        fields = ('active','email', 'name','telecom',
-                  'gender','birthDate','deceased','address','maritalStatus',
-                  'contact', 'communication','managingOrganization','link','password','token')
+        fields = ('first_name','last_name', 'email', 'password','occupation',
+                  'period','contact_point','deceased','address','human_name',
+                  'marital_status','contact', 'communication','link','token')
+
     def create(self, validated_data):
         return Patient.objects.create_patient(**validated_data)
 
@@ -46,11 +49,6 @@ class PractitionerRegistrationSerializer(serializers.ModelSerializer):
         min_length = 8,
         write_only = True
     )
-    name = serializers.StringRelatedField(read_only=True)
-    telecom = serializers.StringRelatedField(read_only=True)
-    address = serializers.StringRelatedField(read_only=True)
-    qualification = serializers.StringRelatedField(read_only=True)
-    communication = serializers.StringRelatedField(read_only=True)
 
     # password_confirm = serializers.CharField(
     #     max_length = 150,
@@ -62,7 +60,7 @@ class PractitionerRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Practitioner
-        fields = ('active','name','telecom','address','gender','birthDate','qualification','communication','password','token')
+        fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token')
 
     def create(self, validated_data):
         return Practitioner.objects.create_doctor(**validated_data)
@@ -108,21 +106,21 @@ class UserLoginSerializer(serializers.Serializer):
             'email': user.email,
             'token': user.token
         }
-
+        
 class PeriodSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Period
-        fields = ('start','end')
+        fields = ('pk','start','end')
 
 class ContactPointSerializer(WritableNestedModelSerializer):
     
     # period = serializers.StringRelatedField(read_only=True)
-    period = PeriodSerializer(many=True, required=False)
+    period = PeriodSerializer(many=True,required=False)
 
     class Meta:
         model = ContactPoint
-        fields = ('system','value','use','rank','period')
+        fields = ('pk','system','value','use','rank','period')
     
     # def create(self, validated_data):
     #     periods = validated_data.pop("period")
@@ -145,7 +143,6 @@ class ContactPointSerializer(WritableNestedModelSerializer):
     #     return super().update(instance, validated_data)
 
 class DeceasedSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Deceased
         fields = "__all__"
@@ -154,36 +151,36 @@ class DeceasedSerializer(serializers.ModelSerializer):
 class AddressSerializer(WritableNestedModelSerializer):
 
     # period = serializers.StringRelatedField(read_only=True)
-    period = PeriodSerializer(many=True, read_only=True)
+    period = PeriodSerializer(many=True,required=False)
 
     class Meta:
         model = Address
-        fields = ('use','address_type','text','line','city','district','state','postalCode','country','period')
+        fields = ('pk','use','address_type','text','line','city','district','state','postalCode','country','period')
 
 
 class TelecomSerializer(WritableNestedModelSerializer):
-    period = PeriodSerializer(many=True, read_only=True)
+    period = PeriodSerializer(many=True,required=False)
 
     class Meta:
         model = Telecom
-        fields = ('system','value','use','rank','period')
+        fields = ('pk','system','value','use','rank','period')
 
 
 class HumanNameSerializer(WritableNestedModelSerializer):
-    period = PeriodSerializer(many=True, read_only=True)
+    period = PeriodSerializer(many=True,required=False)
 
     # period = serializers.StringRelatedField(read_only=True)
     
     class Meta:
         model = HumanName
-        fields = ('use','text','family','given','prefix','suffix','period')
+        fields = ('pk','use','text','family','given','prefix','suffix','period')
 
 
 class MaritalStatusSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = MaritalStatus
-        fields = "__all__"
+        fields = ("pk","text")
 
 
 
@@ -192,104 +189,105 @@ class ContactSerializer(WritableNestedModelSerializer):
     # telecom = serializers.StringRelatedField(read_only=True)
     # address = serializers.StringRelatedField(read_only=True)
     # period = serializers.StringRelatedField(read_only=True)
-    name = HumanNameSerializer(many=True, read_only=True)
-    telecom = TelecomSerializer(many=True, read_only=True)
-    address = AddressSerializer(many=True, read_only=True)
-    period = PeriodSerializer(many=True, read_only=True)
+    
+    name = HumanNameSerializer(many=True,required=False)
+    telecom = TelecomSerializer(many=True,required=False)
+    address = AddressSerializer(many=True,required=False)
+    period = PeriodSerializer( many=True,required=False)
 
 
     class Meta:
         model = Contact
-        fields = ('relationship','name','telecom','address','gender','period')
+        fields = ('pk','relationship','name','telecom','address','gender','period')
 
 class CommunicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Communication
-        fields = "__all__"
+        fields = ("pk","language","preferred")
 
 
 class LinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Link
-        fields = "__all__"
+        fields = ("pk","link_type")
 
 class OrganizationContactSerializer(WritableNestedModelSerializer):
     # name = serializers.StringRelatedField(read_only=True)
     # telecom = serializers.StringRelatedField(read_only=True)
     # address = serializers.StringRelatedField(read_only=True)
-    telecom = TelecomSerializer(many=True, read_only=True)
-    address = AddressSerializer(many=True, read_only=True)
- 
+    name = HumanNameSerializer(many=True,required=False)   
+    telecom = TelecomSerializer(many=True,required=False)
+    address = AddressSerializer(many=True,required=False)
+    
 
     class Meta:
         model = OrganizationContact
-        fields = ("purpose","name","telecom","address")
+        fields = ("pk","purpose","name","telecom","address")
 
 
 class OrganizationSerializer(WritableNestedModelSerializer):
     # telecom = serializers.StringRelatedField(read_only=True)
     # address = serializers.StringRelatedField(read_only=True)
     # contact = serializers.StringRelatedField(read_only=True)
-    telecom = OrganizationContactSerializer(many=True, read_only=True)
-    address = AddressSerializer(many=True, read_only=True)
-    contact = ContactSerializer(many=True, read_only=True)
- 
+    telecom = OrganizationContactSerializer(required=False)
+    address = AddressSerializer(many=True,required=False)
+    contact = ContactPointSerializer(many=True,required=False)
 
     class Meta:
         model = Organization
-        fields = ("active","types","name","alias", "telecom","address","contact")
+        fields = ("pk","active","types","name","alias", "telecom","address","contact")
 
 
 class HealthcareCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = HealthcareCategory
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class TypeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Type
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class SpecialitySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Speciality
-        fields = ("text",)
+        fields = ("pk","text",)
     
 class ServiceProvisionCodeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ServiceProvisionCode
-        fields =("text",)
+        fields =("pk","text",)
 
 
 class ProgramSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Program
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class ReferralMethodSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ReferralMethod
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class availableTimeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = availableTime
-        fields = ("daysOfWeek","allDay","availableStartTime","availabelEndTime",)
+        fields = ("pk","daysOfWeek","allDay","availableStartTime","availabelEndTime",)
     
 class notAvailableTimeSerializer(WritableNestedModelSerializer):
-    during = serializers.StringRelatedField(read_only=True)
+    during = serializers.StringRelatedField(many=True,required=False)
 
     class Meta:
         model = notAvailableTime
-        fields = ("description","during")
+        fields = ("pk","description","during")
 
 
 
@@ -307,36 +305,36 @@ class HealthcareServiceSerializer(WritableNestedModelSerializer):
     # availableTime = serializers.StringRelatedField(read_only=True)
     # notAvailable = serializers.StringRelatedField(read_only=True)
     
-    category = HealthcareCategorySerializer(many=True, read_only=True)
-    types = TypeSerializer(many=True, read_only=True)
-    speciality = SpecialitySerializer(many=True, read_only=True)
+    category = HealthcareCategorySerializer(many=True,required=False)
+    types = TypeSerializer(many=True,required=False)
+    speciality = SpecialitySerializer(many=True,required=False)
 #    - location = TypeSerializer(many=True, read_only=True)
-    telecom = TelecomSerializer(many=True, read_only=True)
-    serviceProvisionCode = ServiceProvisionCodeSerializer(many=True, read_only=True)
-    program = ProgramSerializer(many=True, read_only=True)
-    communication = CommunicationSerializer(many=True, read_only=True)
-    referralMethod = ReferralMethodSerializer(many=True, read_only=True)
-    availableTime = availableTimeSerializer(many=True, read_only=True)
-    notAvailable = notAvailableTimeSerializer(many=True, read_only=True)
+    telecom = TelecomSerializer(many=True,required=False)
+    serviceProvisionCode = ServiceProvisionCodeSerializer( many=True,required=False)
+    program = ProgramSerializer(many=True,required=False)
+    communication = CommunicationSerializer(many=True,required=False)
+    referralMethod = ReferralMethodSerializer(many=True,required=False)
+    availableTime = availableTimeSerializer(many=True,required=False)
+    notAvailable = notAvailableTimeSerializer(many=True,required=False)
  
 
     class Meta:
         model = HealthcareService
-        fields = ("active","providedBy","category","types","speciality","location","name","comment","serviceProvisionCode","program","communication","referralMethod","appointmentRequired","availableTime","notAvailable","availabilityExceptions",)
+        fields = ("pk","active","providedBy","category","types","speciality","location","name","comment","serviceProvisionCode","program","communication","referralMethod","appointmentRequired","availableTime","notAvailable","availabilityExceptions",)
 
     
 class StatusCodeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = StatusCode
-        fields = ("text",)
+        fields = ("pk","text",)
 
 
 class ParticipantRoleSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ParticipantRole
-        fields = ("text")
+        fields = ("pk","text")
     
 # class ParticipantSerializer(serializers.ModelSerializer):
     
@@ -346,13 +344,13 @@ class ParticipantRoleSerializer(serializers.ModelSerializer):
 
 class ParticipantSerializer(WritableNestedModelSerializer):
     
-    role = ParticipantRoleSerializer(many=True, read_only=True)
-    onBehalfOf = OrganizationSerializer(many=True, read_only=True)
-    period = PeriodSerializer(many=True, read_only=True)
+    role = ParticipantRoleSerializer(many=True,required=False)
+    onBehalfOf = OrganizationSerializer(many=True,required=False)
+    period = PeriodSerializer(many=True,required=False)
 
     class Meta:
         model = Participant
-        fields = ("role","onBehalfOf","period")
+        fields = ("pk","role","onBehalfOf","period")
 
 
 class ReasonCodeSerializer(serializers.ModelSerializer):
@@ -360,19 +358,19 @@ class ReasonCodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReasonCode
-        fields = ("text")
+        fields = ("pk","text")
 
 class AnnotationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Annotation
-        fields = ("time","text")
+        fields = ("pk","time","text")
 
 class AuthorSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Author
-        fields = ("authorString",)
+        fields = ("pk","authorString",)
 
 class CareTeamSerializer(WritableNestedModelSerializer):
     # status = serializers.StringRelatedField(read_only=True)
@@ -382,59 +380,59 @@ class CareTeamSerializer(WritableNestedModelSerializer):
     # telecom = serializers.StringRelatedField(read_only=True)
     # note = serializers.StringRelatedField(read_only=True)
 
-    status = StatusCodeSerializer(many=True, read_only=True)
-    period = PeriodSerializer(many=True, read_only=True)
-    participant = ParticipantSerializer(many=True, read_only=True)
-    managingOrganization = OrganizationSerializer(many=True, read_only=True)
-    telecom = TelecomSerializer(many=True, read_only=True)
-    note = AnnotationSerializer(many=True, read_only=True)
+    status = StatusCodeSerializer(many=True,required=False)
+    period = PeriodSerializer(many=True,required=False)
+    participant = ParticipantSerializer(many=True,required=False)
+    managingOrganization = OrganizationSerializer(many=True,required=False)
+    telecom = TelecomSerializer(many=True,required=False)
+    note = AnnotationSerializer(many=True,required=False)
 
     class Meta:
         model = CareTeam
-        fields = ("status","name","period","reasonCode","managingOrganization","telecom","note",)
+        fields = ("pk","status","name","period","reasonCode","managingOrganization","telecom","note",)
 
 
 class StatusSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Status
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class OperationalStatusSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = OperationalStatus
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class ModeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Mode
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class TypesSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Types
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class PhysicalLocationTypeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = PhysicalLocationType
-        fields = ("text",)
+        fields = ("pk","text",)
 
 class PositionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Position
-        fields = ("longitude","latitude","altitude")
+        fields = ("pk","longitude","latitude","altitude")
 
 class HoursOfOperationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = HoursOfOperation
-        fields = ("daysOfWeek","allDay","openingTime","closingTime")
+        fields = ("pk","daysOfWeek","allDay","openingTime","closingTime")
 
 
 class LocationSerializer(WritableNestedModelSerializer):
@@ -451,18 +449,18 @@ class LocationSerializer(WritableNestedModelSerializer):
     # telecom = serializers.StringRelatedField(read_only=True)
     # address = serializers.StringRelatedField(read_only=True)
    
-    status = StatusCodeSerializer(many=True, read_only=True)
-    operationalStatus = OperationalStatusSerializer(many=True, read_only=True)
-    mode = ModeSerializer(many=True, read_only=True)
-    types = TypesSerializer(many=True, read_only=True)
-    telecom = TelecomSerializer(many=True, read_only=True)
-    address = AddressSerializer(many=True, read_only=True)
-    physicalType = PhysicalLocationTypeSerializer(many=True, read_only=True)
-    position = PositionSerializer(many=True, read_only=True)
-    managinOrganization = OrganizationSerializer(many=True, read_only=True)
-    hourseOfOperation = HoursOfOperationSerializer(many=True, read_only=True)
+    status = StatusCodeSerializer(many=True,required=False)
+    operationalStatus = OperationalStatusSerializer(many=True,required=False)
+    mode = ModeSerializer(many=True, required=False)
+    types = TypesSerializer(many=True, required=False)
+    telecom = TelecomSerializer(many=True, required=False)
+    address = AddressSerializer(many=True, required=False)
+    physicalType = PhysicalLocationTypeSerializer(many=True, required=False)
+    position = PositionSerializer(many=True, required=False)
+    managinOrganization = OrganizationSerializer(many=True, required=False)
+    hourseOfOperation = HoursOfOperationSerializer(many=True, required=False)
 
 
     class Meta:
         model = Location
-        fields = ("status","operationalStatus","name","alias","description","mode","types","telecom","address","physicalType","position","managingOrganization","hoursOfOperation","availabilityExceptions")
+        fields = ("pk","status","operationalStatus","name","alias","description","mode","types","telecom","address","physicalType","position","managingOrganization","hoursOfOperation","availabilityExceptions")

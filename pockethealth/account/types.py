@@ -145,10 +145,22 @@ class HumanName(models.Model):
     relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_name', on_delete=models.CASCADE,null=True, blank=True)
     patient = models.ForeignKey("account.Patient", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
     practitioner = models.ForeignKey("account.Practitioner", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
+    telecom = models.ForeignKey("account.Telecom", related_name = 'name', on_delete=models.CASCADE,null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.text = self.given +" "+self.family
         super(HumanName, self).save(*args, **kwargs)
+
+class Telecom(models.Model):
+    contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    location = models.ForeignKey('account.Location',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    careteam = models.ForeignKey('account.CareTeam',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    patient = models.ForeignKey('account.Patient',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    practitioner = models.ForeignKey('account.Practitioner',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    organization = models.ForeignKey("account.Organization",related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    healthcareservice = models.ForeignKey("account.HealthCareService",related_name='telecom',on_delete=models.CASCADE, null=True, blank=True)
+
 
 class ContactPoint(models.Model):
     """
@@ -196,22 +208,9 @@ class ContactPoint(models.Model):
     value = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices = USE_CODE, null=True, blank=True)
     rank = models.IntegerField(null=True, blank=True)
-    organizationcontact = models.ForeignKey("account.OrganizationContact",related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
-    organization = models.ForeignKey("account.Organization",related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
-    healthcareservice = models.ForeignKey("account.HealthCareService",related_name='telecom',on_delete=models.CASCADE, null=True, blank=True)
     relatedperson = models.ForeignKey(RelatedPerson, related_name = 'related_person_contact_point', on_delete=models.CASCADE,null=True, blank=True)
     # period = models.OneToOneField(Period,on_delete=models.CASCADE,null=True, blank=True)
-
-    # @property
-    # def periods(self):
-    #     return self.period_set.all()
-
-class Telecom(ContactPoint):
-    contact = models.ForeignKey(Contact,related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
-    location = models.ForeignKey('account.Location',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
-    careteam = models.ForeignKey('account.CareTeam',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
-    patient = models.ForeignKey('account.Patient',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
-    practitioner = models.ForeignKey('account.Practitioner',related_name='telecom',on_delete=models.CASCADE,null=True, blank=True)
+    telecom = models.ForeignKey(Telecom, related_name = 'contactpoint', on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Address(models.Model):
@@ -467,4 +466,5 @@ class Period(models.Model):
     participant = models.ForeignKey("account.Participant",related_name='period',on_delete=models.CASCADE,null=True, blank=True)
     qualification = models.ForeignKey(Qualification,related_name='period',on_delete=models.CASCADE,null=True, blank=True)
     careteam = models.ForeignKey("account.CareTeam",related_name='period',on_delete=models.CASCADE,null=True, blank=True)
+    telecom = models.ForeignKey("account.Telecom",related_name='period',on_delete=models.CASCADE,null=True, blank=True)
 

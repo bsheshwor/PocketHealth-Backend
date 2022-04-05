@@ -79,20 +79,20 @@ urlpatterns = [
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
                                         }), name='link-detail'),
-    path('oraganization/', OrganizationViewSet.as_view({'get': 'list', 'post':'create'}), name='oraganization'),
-    path('oraganization/<int:pk>', OrganizationViewSet.as_view({
+    path('organization/', OrganizationViewSet.as_view({'get': 'list', 'post':'create'}), name='organization'),
+    path('organization/<int:pk>', OrganizationViewSet.as_view({
                                             'get': 'retrieve',
                                             'put': 'update',
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
-                                        }), name='oraganization-detail'),
-    path('oraganization/contact/', OrganizationContactViewSet.as_view({'get': 'list', 'post':'create'}), name='oraganization_contact'),
-    path('oraganization/contact/<int:pk>', OrganizationContactViewSet.as_view({
+                                        }), name='organization-detail'),
+    path('organization/contact/', OrganizationContactViewSet.as_view({'get': 'list', 'post':'create'}), name='organization_contact'),
+    path('organization/contact/<int:pk>', OrganizationContactViewSet.as_view({
                                             'get': 'retrieve',
                                             'put': 'update',
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
-                                        }), name='oraganization-contact-detail'), 
+                                        }), name='organization-contact-detail'), 
     path('healthcareservice/', HealthcareServiceViewSet.as_view({'get': 'list', 'post':'create'}), name='healthcareservice'),
     path('healthcareservice/<int:pk>', HealthcareServiceViewSet.as_view({
                                             'get': 'retrieve',

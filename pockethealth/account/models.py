@@ -12,7 +12,6 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
-
 class UserManager(BaseUserManager):
     """Helps django work with our custom user model."""
 
@@ -41,28 +40,23 @@ class UserManager(BaseUserManager):
         user.save(using=self._db) 
     
 
-
+    
 class PatientManager(BaseUserManager):
 
-    def create_patient(self, email,active, name,telecom,gender,birthDate,decreased,address,maritalStatus,contact, communication,managingOrganization,link, password = None):
+    def create_patient(self, first_name, last_name, email, occupation, password = None):
         if email is None:
             raise TypeError('Users must have an email address')
-        patient = Patient(email=self.normalize_email(email),active=active, name=name,
-                          telecom=telecom,gender=gender,birthDate=birthDate,
-                          decreased=decreased,address=address,maritalStatus=maritalStatus,
-                          contact=contact, communication=communication,
-                          managingOrganization=managingOrganization,link=link, 
-                          occupation=occupation)
+        patient = Patient(first_name= first_name, last_name=last_name, email = self.normalize_email(email), occupation=occupation)
         patient.set_password(password)
         patient.save()
         return patient
 
 class PractitionerManager(BaseUserManager):
     
-    def create_practitioner(self, active, name,email, telecom, address, gender, birthDate, qualification, communication, password = None):
+    def create_practitioner(self, first_name, last_name, email, hospital_name, password = None):
         if email is None:
             raise TypeError('Users must have an email address.')
-        doctor = Practitioner(active=active, name=name, email=self.normalize_email(email), telecom=telecom, address=address, gender=gender, birthDate=birthDate, qualification=qualification, communication=communication)
+        doctor = Practitioner(first_name=first_name, last_name=last_name, email=self.normalize_email(email), hospital_name=hospital_name)
         doctor.set_password(password)
         doctor.save()
         return doctor
@@ -112,59 +106,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         return self.email
 
-class Patient(models.Model):
-    GENDER_CODE = (
-        ("1","male"),
-        ("2","female"),
-        ("3","other"),
-        ("4","unknown")
-    )
-    user = models.OneToOneField(User,on_delete=models.CASCADE, related_name="patient")
-    active = models.BooleanField(db_index=True)
-    email = models.EmailField(db_index=True, unique=True)
-    
-    # name
-    # telecom
-    gender = models.CharField(db_index=True, max_length=100, choices = GENDER_CODE)
-    birthDate = models.DateField(db_index=True)
-    # deceased
-    # address
-    # maritalStatus
-    #TODO: --> multipleBirth
-    #TODO: --> photo
-    # contact
-    # communication 
-    # TODO:--> generalPractitioner
-    # managingOrganization
-    # link
- 
+class Patient(User, PermissionsMixin):
+    # user = models.OneToOneField(User,on_delete=models.CASCADE, related_name="customer_account")
+    occupation = models.CharField(db_index=True, max_length=100)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['active', 'email','name','telecom','gender','birthDate','decreased','address','maritalStatus','contact', 'communication','managingOrganization','link']
+    REQUIRED_FIELDS = ['first_name', 'last_name','occupation' ]
 
     objects = PatientManager()
 
     def __str__(self):
-        return self.email
+        return self.first_name
 
-class Practitioner(models.Model):
-    GENDER_CODE = (
-        ("1","male"),
-        ("2","female"),
-        ("3","other"),
-        ("4","unknown")
-    )
-    #identifier
-    user = models.OneToOneField(User,on_delete=models.CASCADE, related_name="practitioner")
-    active = models.BooleanField(db_index=True, max_length=100,null=True, blank=True)
-    # name 
-    # telecom
-    # address
-    gender = models.CharField(db_index=True, max_length=100, choices = GENDER_CODE)
-    birthDate = models.DateField(db_index=True)
-    # photo
-    # qualification
-    # communication
+class Practitioner(User, PermissionsMixin):
+    # user = models.OneToOneField(UserProfile,on_delete=models.CASCADE, related_name="doctor_account")
+    hospital_name = models.CharField(db_index=True, max_length=100,null=True, blank=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'hospital_name']
 
