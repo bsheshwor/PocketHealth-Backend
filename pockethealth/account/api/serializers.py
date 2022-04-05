@@ -7,7 +7,7 @@ from account.models import User, Patient, Practitioner
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
-from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation, Author
+from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation,Note, Author
 from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
 class PatientRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -106,7 +106,7 @@ class UserLoginSerializer(serializers.Serializer):
             'email': user.email,
             'token': user.token
         }
-        
+
 class PeriodSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -159,12 +159,10 @@ class AddressSerializer(WritableNestedModelSerializer):
 
 
 class TelecomSerializer(WritableNestedModelSerializer):
-    period = PeriodSerializer(many=True,required=False)
-
+    contactpoint = ContactPointSerializer(many=True,required=False)
     class Meta:
         model = Telecom
-        fields = ('pk','system','value','use','rank','period')
-
+        fields = ('pk','contactpoint')
 
 class HumanNameSerializer(WritableNestedModelSerializer):
     period = PeriodSerializer(many=True,required=False)
@@ -231,9 +229,9 @@ class OrganizationSerializer(WritableNestedModelSerializer):
     # telecom = serializers.StringRelatedField(read_only=True)
     # address = serializers.StringRelatedField(read_only=True)
     # contact = serializers.StringRelatedField(read_only=True)
-    telecom = OrganizationContactSerializer(required=False)
+    telecom = TelecomSerializer(many=True,required=False)
     address = AddressSerializer(many=True,required=False)
-    contact = ContactPointSerializer(many=True,required=False)
+    contact = OrganizationContactSerializer(many=True,required=False)
 
     class Meta:
         model = Organization
@@ -320,7 +318,7 @@ class HealthcareServiceSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = HealthcareService
-        fields = ("pk","active","providedBy","category","types","speciality","location","name","comment","serviceProvisionCode","program","communication","referralMethod","appointmentRequired","availableTime","notAvailable","availabilityExceptions",)
+        fields = ("pk","active","providedBy","category","types","speciality","telecom","location","name","comment","serviceProvisionCode","program","communication","referralMethod","appointmentRequired","availableTime","notAvailable","availabilityExceptions",)
 
     
 class StatusCodeSerializer(serializers.ModelSerializer):
@@ -360,11 +358,20 @@ class ReasonCodeSerializer(serializers.ModelSerializer):
         model = ReasonCode
         fields = ("pk","text")
 
+
 class AnnotationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Annotation
         fields = ("pk","time","text")
+
+class NoteSerializer(WritableNestedModelSerializer):
+    
+    annotation = AnnotationSerializer(many=True,required=False)
+
+    class Meta:
+        model = Note
+        fields = ("pk","annotation")
 
 class AuthorSerializer(serializers.ModelSerializer):
     
@@ -385,11 +392,12 @@ class CareTeamSerializer(WritableNestedModelSerializer):
     participant = ParticipantSerializer(many=True,required=False)
     managingOrganization = OrganizationSerializer(many=True,required=False)
     telecom = TelecomSerializer(many=True,required=False)
-    note = AnnotationSerializer(many=True,required=False)
+    note = NoteSerializer(many=True,required=False)
+    reasonCode = ReasonCodeSerializer(many=True,required=False)
 
     class Meta:
         model = CareTeam
-        fields = ("pk","status","name","period","reasonCode","managingOrganization","telecom","note",)
+        fields = ("pk","status","name","period","participant","reasonCode","managingOrganization","telecom","note",)
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -457,8 +465,8 @@ class LocationSerializer(WritableNestedModelSerializer):
     address = AddressSerializer(many=True, required=False)
     physicalType = PhysicalLocationTypeSerializer(many=True, required=False)
     position = PositionSerializer(many=True, required=False)
-    managinOrganization = OrganizationSerializer(many=True, required=False)
-    hourseOfOperation = HoursOfOperationSerializer(many=True, required=False)
+    managingOrganization = OrganizationSerializer(many=True, required=False)
+    hoursOfOperation = HoursOfOperationSerializer(many=True, required=False)
 
 
     class Meta:

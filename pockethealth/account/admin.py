@@ -5,7 +5,7 @@ from account.models import User, Patient, Practitioner
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Link,Telecom,RelatedPerson,Qualification, QualificationCodeableConcept
 from account.organization import Organization, OrganizationContact
 from account.healthcareService import HealthcareService, HealthcareCategory, Type, Speciality, ServiceProvisionCode, Program,ReferralMethod, availableTime, notAvailableTime
-from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation, Author
+from account.careteam import CareTeam, StatusCode, ParticipantRole, Participant, ReasonCode, Annotation, Note,Author
 from account.location import  Location, Status, OperationalStatus, Mode, Types, PhysicalLocationType, Position, HoursOfOperation
 
 class PeriodInline(admin.TabularInline):
@@ -86,6 +86,9 @@ class ReasonCodeInline(admin.TabularInline):
 class AnnotationInline(admin.TabularInline):
     model = Annotation
 
+class NoteInline(admin.TabularInline):
+    model = Note
+
 class AuthorInline(admin.TabularInline):
     model = Author
 
@@ -162,7 +165,12 @@ class HealthcareServiceAdmin(admin.ModelAdmin):
 
 @admin.register(CareTeam)
 class CareTeamAdmin(admin.ModelAdmin):
-    inlines = [StatusCodeInline, PeriodInline,ReasonCodeInline,OrganizationInline, TelecomInline,AnnotationInline]
+    inlines = [StatusCodeInline, PeriodInline,ReasonCodeInline,OrganizationInline, TelecomInline,NoteInline]
+
+@admin.register(Note)
+class NoteAdmin(admin.ModelAdmin):
+    inlines = [AnnotationInline,]
+
 
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):

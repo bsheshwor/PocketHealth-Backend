@@ -44,6 +44,8 @@ class Participant(models.Model):
     #TODO member = Reference(Practitioner | PractitionerRole | RelatedPerson | Patient | Organization | CareTeam)
     # onBehalfOf = Refernce(Organization)
     # period = Period 
+    careteam = models.ForeignKey(CareTeam,related_name='participant',on_delete=models.CASCADE,null=True, blank=True)
+
     pass
 
 class ParticipantRole(models.Model):
@@ -120,11 +122,15 @@ class ReasonCode(models.Model):
     careteam = models.ForeignKey(CareTeam,related_name='reasonCode',on_delete=models.CASCADE,null=True, blank=True)
 
 
+class Note(models.Model):
+    careteam = models.ForeignKey(CareTeam,related_name='note',on_delete=models.CASCADE,null=True, blank=True)
+
+
 class Annotation(models.Model):
     # Author
     time = models.DateTimeField(null=True, blank=True)
     text = models.CharField(max_length=255,null=True, blank=True)
-    careteam = models.ForeignKey(CareTeam,related_name='note',on_delete=models.CASCADE)
+    note = models.ForeignKey(Note,related_name='annotation',on_delete=models.CASCADE,null=True, blank=True)
 
 
 class Author(models.Model):

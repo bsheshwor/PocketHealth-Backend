@@ -2,7 +2,7 @@ from django.urls import path
 from django.urls.resolvers import URLPattern
 
 from .views import PatientRegistration, PractitionerRegistration, UserLogin,PeriodViewSet,ContactPointViewSet,DeceasedViewSet,AddressViewSet,HumanNameViewSet,MaritalStatusViewSet,ContactViewSet,CommunicationViewSet,TelecomViewSet,LinkViewSet
-from .views import OrganizationViewSet,OrganizationContactViewSet,HealthcareServiceViewSet,HealthcareCategoryViewSet,TypeViewSet,SpecialityViewSet,ServiceProvisionCodeViewSet,ProgramViewSet,ReferralMethodViewSet,availableTimeViewSet,notAvailableTimeViewSet,CareTeamViewSet,StatusCodeViewSet,ParticipantRoleViewSet, ParticipantViewSet,ReasonCodeViewSet,AnnotationViewSet,AuthorViewSet,LocationViewSet,StatusViewSet,OperationalStatusViewSet,ModeViewSet,TypesViewSet,PhysicalLocationTypeViewSet,PositionViewSet,HoursOfOperationViewSet
+from .views import OrganizationViewSet,OrganizationContactViewSet,HealthcareServiceViewSet,HealthcareCategoryViewSet,TypeViewSet,SpecialityViewSet,ServiceProvisionCodeViewSet,ProgramViewSet,ReferralMethodViewSet,availableTimeViewSet,notAvailableTimeViewSet,CareTeamViewSet,StatusCodeViewSet,ParticipantRoleViewSet, ParticipantViewSet,ReasonCodeViewSet,AnnotationViewSet,NoteViewSet,AuthorViewSet,LocationViewSet,StatusViewSet,OperationalStatusViewSet,ModeViewSet,TypesViewSet,PhysicalLocationTypeViewSet,PositionViewSet,HoursOfOperationViewSet
 app_name = 'account'
 
 urlpatterns = [
@@ -191,13 +191,20 @@ urlpatterns = [
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
                                         }), name='careteam-reasoncode-detail'),                                 
-    path('careteam/anotation/', AnnotationViewSet.as_view({'get': 'list', 'post':'create'}), name='careteam-anotation'),
-    path('careteam/anotation/<int:pk>', AnnotationViewSet.as_view({
+    path('careteam/annotation/', AnnotationViewSet.as_view({'get': 'list', 'post':'create'}), name='careteam-annotation'),
+    path('careteam/annotation/<int:pk>', AnnotationViewSet.as_view({
                                             'get': 'retrieve',
                                             'put': 'update',
                                             'patch': 'partial_update',
                                             'delete': 'destroy'
-                                        }), name='careteam-anotation-detail'),
+                                        }), name='careteam-annotation-detail'),
+    path('careteam/note/', NoteViewSet.as_view({'get': 'list', 'post':'create'}), name='careteam-note'),
+    path('careteam/note/<int:pk>', NoteViewSet.as_view({
+                                            'get': 'retrieve',
+                                            'put': 'update',
+                                            'patch': 'partial_update',
+                                            'delete': 'destroy'
+                                        }), name='careteam-note-detail'),
     path('careteam/author/', AuthorViewSet.as_view({'get': 'list', 'post':'create'}), name='careteam-author'),
     path('careteam/author/<int:pk>', AuthorViewSet.as_view({
                                             'get': 'retrieve',
