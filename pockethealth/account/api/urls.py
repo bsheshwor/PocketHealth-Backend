@@ -9,8 +9,8 @@ urlpatterns = [
     path('patient_register/', PatientRegistration.as_view(), name='patient_register'),
     path('practitioner_register/', PractitionerRegistration.as_view(), name='practitioner_register'),
     path('login/', UserLogin.as_view(), name='login'),
-    path('patient/register_model/', PeriodViewSet.as_view({'get': 'list', 'post':'create'}), name="patient_register_model"),
-    path('patient/register_model//<int:pk>', PeriodViewSet.as_view({
+    path('patient/register_model/', PatientRegisterModelViewSet.as_view({'get': 'list', 'post':'create'}), name="patient_register_model"),
+    path('patient/register_model/<int:pk>', PatientRegisterModelViewSet.as_view({
                                             'get': 'retrieve',
                                             'put': 'update',
                                             'patch': 'partial_update',

@@ -122,7 +122,6 @@ class OrganizationContactSerializer(WritableNestedModelSerializer):
     telecom = TelecomSerializer(many=True,required=False)
     address = AddressSerializer(many=True,required=False)
     
-
     class Meta:
         model = OrganizationContact
         fields = ("pk","purpose","name","telecom","address")
@@ -437,7 +436,7 @@ class PractitionerRegistrationSerializer(serializers.ModelSerializer):
         return Practitioner.objects.create_doctor(**validated_data)
 
 class PatientRegisterModelSerializer(WritableNestedModelSerializer):
-    name = HumanNameSerializer(many=True, required=False)
+    name = HumanNameSerializer(many=True,required=False)
     telecom = TelecomSerializer(many=True, required=False)
     address = AddressSerializer(many=True, required=False)
     maritalStatus = MaritalStatusSerializer(many=True, required=False)
@@ -448,9 +447,8 @@ class PatientRegisterModelSerializer(WritableNestedModelSerializer):
     link = LinkSerializer(many=True, required=False)
 
     class Meta:
-        model = Practitioner
+        model = PatientRegisterModel
         fields = ("pk","active","name","telecom","gender","birthDate","address","maritalStatus","contact","communication","managingOrganization","link")
-
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length = 255)

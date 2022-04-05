@@ -190,7 +190,6 @@ class PatientRegisterAdmin(admin.ModelAdmin):
     inlines = [HumanNameInline, TelecomInline, AddressInline, MaritalStatusInline, ContactInline, CommunicationInline, OrganizationInline, LinkInline]
 
 
-
 admin.site.register(Deceased)
 # admin.site.register(Address)
 # admin.site.register(HumanName)
