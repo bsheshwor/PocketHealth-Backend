@@ -4,7 +4,7 @@ from trackers.models import BMIData, PressureData, BloodSugarData
 class BMISerializer(serializers.ModelSerializer):
     class Meta:
         model = BMIData
-        fields = ['user', 'weight_in_kg', 'height_in_cm']
+        fields = ['user', 'weight_in_kg', 'height_in_cm', 'bmi_result', 'created_at']
 
 class PressureSerializer(serializers.ModelSerializer):
     class Meta:
