@@ -475,7 +475,7 @@ class PractitionerRegistrationSerializer(serializers.ModelSerializer):
         fields = ("pk","email","password","token",)
 
     def create(self, validated_data):
-        return Practitioner.objects.create_doctor(**validated_data)
+        return Practitioner.objects.create_practitioner(**validated_data)
 
 
 class UserLoginSerializer(serializers.Serializer):
