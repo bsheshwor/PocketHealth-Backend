@@ -133,8 +133,8 @@ class QualificationCodeableConceptInline(admin.TabularInline):
     model = QualificationCodeableConcept
 
 admin.site.register(User)
-admin.site.register(Patient)
-admin.site.register(Practitioner)
+# admin.site.register(Patient)
+# admin.site.register(Practitioner)
 admin.site.register(Period)
 
 
@@ -194,7 +194,7 @@ class LocationAdmin(admin.ModelAdmin):
     inlines = [StatusInline, OperationalStatusInline, ModeInline, TypesInline, TelecomInline, AddressInline, PhysicalLocationTypeInline, PositionInline, OrganizationInline, HoursOfOperationInline]
 
 @admin.register(PatientRegisterModel)
-class PatientRegisterAdmin(admin.ModelAdmin):
+class PatientRegisterModelAdmin(admin.ModelAdmin):
     inlines = [HumanNameInline, TelecomInline, AddressInline, MaritalStatusInline, ContactInline, CommunicationInline, OrganizationInline, LinkInline]
 
 
@@ -204,8 +204,18 @@ class QualificationAdmin(admin.ModelAdmin):
 
 
 @admin.register(PractitionerRegisterModel)
-class PractitionerRegisterAdmin(admin.ModelAdmin):
+class PractitionerRegisterModelAdmin(admin.ModelAdmin):
     inlines = [HumanNameInline, TelecomInline, AddressInline,QualificationInline,CommunicationInline]
+
+
+@admin.register(Patient)
+class PatientAdmin(admin.ModelAdmin):
+    inlines = [PatientRegisterModelInline,]
+
+@admin.register(Practitioner)
+class PractitionerAdmin(admin.ModelAdmin):
+    inlines = [PractitionerRegisterModelInline,]
+
 
 admin.site.register(Deceased)
 # admin.site.register(Address)

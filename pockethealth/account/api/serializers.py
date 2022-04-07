@@ -389,8 +389,36 @@ class LocationSerializer(WritableNestedModelSerializer):
         fields = ("pk","status","operationalStatus","name","alias","description","mode","types","telecom","address","physicalType","position","managingOrganization","hoursOfOperation","availabilityExceptions")
 
 
+class PatientRegisterModelSerializer(WritableNestedModelSerializer):
+    name = HumanNameSerializer(many=True,required=False)
+    telecom = TelecomSerializer(many=True, required=False)
+    address = AddressSerializer(many=True, required=False)
+    maritalStatus = MaritalStatusSerializer(many=True, required=False)
+    # photo
+    contact = ContactSerializer(many=True, required=False)
+    communication = CommunicationSerializer(many=True, required=False)
+    managingOrganization = OrganizationSerializer(many=True, required=False)
+    link = LinkSerializer(many=True, required=False)
+
+    class Meta:
+        model = PatientRegisterModel
+        fields = ("pk","active","name","telecom","gender","birthDate","address","maritalStatus","contact","communication","managingOrganization","link")
+
+
+class PractitionerRegisterModelSerializer(WritableNestedModelSerializer):
+    name = HumanNameSerializer(many=True,required=False)
+    telecom = TelecomSerializer(many=True, required=False)
+    address = AddressSerializer(many=True, required=False)
+    # photo
+    qualification = QualificationSerializer(many=True, required=False)
+    communication = CommunicationSerializer(many=True, required=False)
+    class Meta:
+        model = PractitionerRegisterModel
+        fields = ("pk","active","name","telecom","address","gender","birthDate","qualification","communication")
+
 
 class PatientRegistrationSerializer(serializers.ModelSerializer):
+    # patient = PatientRegisterModelSerializer(required=False)
     password = serializers.CharField(
         max_length = 150,
         min_length = 8,
@@ -419,13 +447,14 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
         model = Patient
         # fields = ('first_name','last_name', 'email', 'password','occupation',
         #           'period','contact_point','deceased','address','human_name',
-        #           'marital_status','contact', 'communication','link','token')
-        fields = ("pk","email","password","token")
+        #           'marital_status','contact', 'communication','link','token'"patient")
+        fields = ("pk","email","password","token",)
 
     def create(self, validated_data):
         return Patient.objects.create_patient(**validated_data)
 
 class PractitionerRegistrationSerializer(serializers.ModelSerializer):
+    # practitioner = PractitionerRegisterModelSerializer(required=False)
     password = serializers.CharField(
         max_length = 150,
         min_length = 8,
@@ -442,38 +471,11 @@ class PractitionerRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Practitioner
-        # fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token')
-        fields = ("pk","email","password","token")
+        # fields = ('first_name','last_name', 'email', 'password', 'hospital_name','token'"practitioner")
+        fields = ("pk","email","password","token",)
 
     def create(self, validated_data):
         return Practitioner.objects.create_doctor(**validated_data)
-
-class PatientRegisterModelSerializer(WritableNestedModelSerializer):
-    name = HumanNameSerializer(many=True,required=False)
-    telecom = TelecomSerializer(many=True, required=False)
-    address = AddressSerializer(many=True, required=False)
-    maritalStatus = MaritalStatusSerializer(many=True, required=False)
-    # photo
-    contact = ContactSerializer(many=True, required=False)
-    communication = CommunicationSerializer(many=True, required=False)
-    managingOrganization = OrganizationSerializer(many=True, required=False)
-    link = LinkSerializer(many=True, required=False)
-
-    class Meta:
-        model = PatientRegisterModel
-        fields = ("pk","active","name","telecom","gender","birthDate","address","maritalStatus","contact","communication","managingOrganization","link")
-
-
-class PractitionerRegisterModelSerializer(WritableNestedModelSerializer):
-    name = HumanNameSerializer(many=True,required=False)
-    telecom = TelecomSerializer(many=True, required=False)
-    address = AddressSerializer(many=True, required=False)
-    # photo
-    qualification = QualificationSerializer(many=True, required=False)
-    communication = CommunicationSerializer(many=True, required=False)
-    class Meta:
-        model = PractitionerRegisterModel
-        fields = ("pk","active","name","telecom","address","gender","birthDate","qualification","communication")
 
 
 class UserLoginSerializer(serializers.Serializer):
