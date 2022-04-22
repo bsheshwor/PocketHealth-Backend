@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'account',
     'trackers',
-    'django_extensions'
+    'django_extensions',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
@@ -88,6 +90,15 @@ DATABASES = {
 }
 
 
+
+# if PRODUCTION:
+#     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+#     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+# else:
+#     env = environ.ENV()
+#     environ.ENV.read_env()
+#     EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+#     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -134,6 +145,38 @@ REST_FRAMEWORK = {
   )
 }
 
+ACCOUNT_SERIALIZER = 'account.api.serializers.PatientRegisterModelSerializer'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "eroj.nyoupane2@gmail.com"
+EMAIL_HOST_PASSWORD = "vszuidhywvkzutta"
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {
+        'user_create': ACCOUNT_SERIALIZER,
+        'user': ACCOUNT_SERIALIZER,
+        'current_user': ACCOUNT_SERIALIZER,
+        # 'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    }
+}
+
+
+
+
+
 import os
 
 STATIC_URL = '/static/'
@@ -146,3 +189,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#https://fathinah.medium.com/calling-rest-api-with-jwt-authentication-in-django-b1c48b8018ed
