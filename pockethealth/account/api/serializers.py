@@ -1,7 +1,9 @@
+from urllib import response
 from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import authenticate
 from drf_writable_nested.serializers import WritableNestedModelSerializer
+from rest_framework.response import Response
 
 from account.models import User, Patient, Practitioner, PatientRegisterModel, PractitionerRegisterModel
 from account.types import Period,ContactPoint,Deceased,Address,HumanName,MaritalStatus,Contact,Communication,Telecom,Link, Qualification,QualificationCodeableConcept
@@ -482,6 +484,7 @@ class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length = 255)
     password = serializers.CharField(max_length=150, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
+    pk = serializers.IntegerField(read_only = True, required = False)
 
     def validate(self,data):
         email = data.get('email', None)
@@ -513,8 +516,12 @@ class UserLoginSerializer(serializers.Serializer):
  
         # The `validate` method should return a dictionary of validated data.
         # This is the data that is passed to the `create` and `update` methods
-    
+        # user_new = User.objects.get(email=user.email)
+        # uid = user_new.pk
+        # print(uid)
+
         return {
+            'pks': user.pk,
             'email': user.email,
             'token': user.token
         }
