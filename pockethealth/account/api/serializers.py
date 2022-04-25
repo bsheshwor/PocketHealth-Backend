@@ -521,7 +521,7 @@ class UserLoginSerializer(serializers.Serializer):
         # print(uid)
 
         return {
-            'pk': user.pk,
+            'pks': user.pk,
             'email': user.email,
             'token': user.token
         }
