@@ -1,4 +1,4 @@
-# PocketHealth-Backend
+# PocketHealth-Backend (ADMINISTRATION LEVEL implementation of FHIR STANDARD)
 **An AI Health Assistant Application built with Django, Django REST Framework.**
 
 This is the source code of "*PocketHealth-Backend*". 
